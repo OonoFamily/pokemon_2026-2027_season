@@ -182,6 +182,7 @@ tr.cancelled td{opacity:.55} tr.cancelled td.amt{text-decoration:line-through}
 .hres-act{display:flex;gap:6px;flex-wrap:wrap}
 .hres.cancelled{opacity:.6}
 .hres.cancelled .hres-top{text-decoration:line-through}
+.hlist{display:flex;flex-direction:column;gap:8px}
 .hwarn{background:var(--gold-soft);color:var(--ink);border-radius:8px;padding:6px 10px;font-size:12px;font-weight:600}
 tbody tr{cursor:pointer} tbody tr:hover td{background:var(--bg)}
 td.amt,th.amt{text-align:right;font-family:var(--f-mono)}
@@ -546,7 +547,7 @@ function thumb(r){ return /^image\//.test(r.type||"")?`<img class="thumb" alt=""
 
 /* ---------- modals ---------- */
 function openModal(html, cls=""){ $("#modal-root").innerHTML=`<div class="scrim" data-scrim><div class="modal ${cls}" role="dialog" aria-modal="true">${html}</div></div>`; const f=$("#modal-root input, #modal-root select, #modal-root textarea"); if(f) setTimeout(()=>f.focus({preventScroll:true}),30); }
-function closeModal(){ $("#modal-root").innerHTML=""; S.draft=null; }
+function closeModal(){ $("#modal-root").innerHTML=""; S.draft=null; S.tourOpen=null; const r=S.returnTo; S.returnTo=null; if(r&&S.tours.has(r)) openTour(r); }
 const val = id => { const el=document.getElementById(id); return el?el.value.trim():""; };
 
 /* tournament editor */
@@ -578,7 +579,8 @@ async function saveNewTour(){
 }
 
 function openTour(id){
-  const t=S.tours.get(id); if(!t) return;
+  S.returnTo=null;
+  const t=S.tours.get(id); if(!t) return; S.tourOpen=id;
   const exps=expsFor(id);
   const travelBlock=k=>{ const o=t[k]||{}, s=k==="flight"?fStat(t):hStat(t), fares=o.fares||[];
     const opts=v=>Object.entries(STATUS).map(([x,l])=>`<option value="${x}" ${v===x?"selected":""}>${l}</option>`).join("");
@@ -586,6 +588,7 @@ function openTour(id){
     return `<div class="fieldset"><div class="hd"><b>${k==="flight"?"Flights":"Hotel"}</b>
       ${k==="hotel"?`<select class="sel" id="hotel-status">${opts(s)}</select>`:""}</div>
       ${k==="flight"?`<div class="grid2">${LEGS.map(([l,n])=>`<label class="f">${n} · ${l==="out"?`${HOME} → ${ap}`:`${ap} → ${HOME}`}<select id="flight-${l}-status">${opts(legStat(t,l))}</select></label>`).join("")}</div>`:""}
+      ${k==="hotel"?`<div class="hlist"><p class="eyebrow">Reservations</p>${hotelRows(t,hotelBookings(t))}</div>`:""}
       <div class="grid3">
         ${k==="flight"?`<label class="f">Depart<input id="flight-depart" type="date" value="${esc(o.depart||(t.start?addDays(t.start,-1):""))}"></label><label class="f">Return<input id="flight-return" type="date" value="${esc(o.return||t.end||"")}"></label><label class="f">Travelers<input id="flight-pax" type="number" min="1" value="${esc(o.pax||4)}"></label>`
           :`<label class="f">Check in<input id="hotel-checkin" type="date" value="${esc(o.checkin||(t.start?addDays(t.start,-1):""))}"></label><label class="f">Check out<input id="hotel-checkout" type="date" value="${esc(o.checkout||t.end||"")}"></label><label class="f">Hotel<input id="hotel-name" value="${esc(o.name||"")}" placeholder="Shortlist or booked"></label>`}
@@ -665,6 +668,7 @@ function expOptionsTours(sel){
   return `<option value="">Season / general (not one event)</option>${pri.length?`<optgroup label="Your trips">${pri.map(o).join("")}</optgroup>`:""}${rest.length?`<optgroup label="Other events">${rest.map(o).join("")}</optgroup>`:""}`;
 }
 function openExp(id, presetTour, presetCat){
+  S.returnTo=S.tourOpen||null; S.tourOpen=null;
   const e = id ? {...S.exps.get(id)} : {category:presetCat||"meals",date:todayISO(),currency:"USD",paidBy:PAYERS[0],tournamentId:presetTour||"",receipts:[]};
   if(id && !S.exps.has(id)) return;
   S.draft={id, e, newFiles:[], removed:[], mode:"file"};
@@ -834,7 +838,7 @@ document.addEventListener("click",ev=>{
     case "imp-parse": parseImport(); break;
     case "imp-save": saveImport(); break;
     case "new-exp": openExp(null,a.dataset.tour,a.dataset.cat); break;
-    case "toggle-cancel": { const x=S.exps.get(id); if(!x) break; x.status=x.status==="cancelled"?"active":"cancelled"; x.updatedAt=new Date().toISOString(); render(); saveDoc("expenses",id); toast(x.status==="cancelled"?"Marked cancelled":"Restored"); break; }
+    case "toggle-cancel": { const x=S.exps.get(id); if(!x) break; x.status=x.status==="cancelled"?"active":"cancelled"; x.updatedAt=new Date().toISOString(); render(); saveDoc("expenses",id); if(S.tourOpen) openTour(S.tourOpen); toast(x.status==="cancelled"?"Marked cancelled":"Restored"); break; }
     case "open-exp": openExp(id); break;
     case "save-exp": saveExp(); break;
     case "mode": { S.draft.mode=a.dataset.v; a.parentElement.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",b===a)); $("#src-file").hidden=a.dataset.v!=="file"; $("#src-email").hidden=a.dataset.v!=="email"; renderAI(); break; }

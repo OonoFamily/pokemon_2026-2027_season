@@ -1,0 +1,889 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Tournament Circuit 2026–27</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a travel desk — summary strip on top, then a date-led season list, a booking board, and a receipts ledger. */
+:root{
+  --bg:#EEF1F6; --surface:#FFFFFF; --sunk:#E4E8F0; --ink:#141C33; --muted:#5A6580; --line:#D6DCE7;
+  --accent:#2747D9; --accent-soft:#E2E8FF; --accent-ink:#FFFFFF;
+  --gold:#C98A0B; --gold-soft:#FCEFCF; --ok:#1A8A5A; --ok-soft:#D9F2E5; --warn:#C2410C; --warn-soft:#FDE6DA; --skip:#8A93A8;
+  --shadow:0 1px 2px rgba(20,28,51,.06),0 6px 20px rgba(20,28,51,.06);
+  --f-display:"Bricolage Grotesque","Avenir Next",system-ui,sans-serif;
+  --f-body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --r:12px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0E1322; --surface:#161D31; --sunk:#1D2540; --ink:#E8ECF7; --muted:#97A1BB; --line:#29324F;
+  --accent:#7C93FF; --accent-soft:#232E5C; --accent-ink:#0E1322;
+  --gold:#F2B94A; --gold-soft:#3A2D10; --ok:#4CC98E; --ok-soft:#133526; --warn:#FF8A5B; --warn-soft:#3E1F12; --skip:#6E7894;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1322; --surface:#161D31; --sunk:#1D2540; --ink:#E8ECF7; --muted:#97A1BB; --line:#29324F;
+  --accent:#7C93FF; --accent-soft:#232E5C; --accent-ink:#0E1322;
+  --gold:#F2B94A; --gold-soft:#3A2D10; --ok:#4CC98E; --ok-soft:#133526; --warn:#FF8A5B; --warn-soft:#3E1F12; --skip:#6E7894;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25); color-scheme:dark}
+:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{-webkit-text-size-adjust:100%}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 60px}
+.wrap{max-width:1080px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance;letter-spacing:-.01em}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.num,.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.eyebrow{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:0}
+
+/* header */
+.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px}
+.brand{display:flex;align-items:center;gap:14px}
+.mark{width:44px;height:44px;border-radius:50%;flex:none;position:relative;background:var(--accent);overflow:hidden;box-shadow:inset 0 0 0 3px var(--ink)}
+.mark::before{content:"";position:absolute;inset:0;top:50%;background:var(--surface);border-top:3px solid var(--ink)}
+.mark::after{content:"";position:absolute;width:14px;height:14px;left:15px;top:15px;border-radius:50%;background:var(--surface);box-shadow:0 0 0 3px var(--ink)}
+.top h1{font-size:clamp(26px,4vw,34px);font-weight:800}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:9px 16px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.small{padding:5px 11px;font-size:13px}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--muted)}
+.btn.ghost:hover{color:var(--ink);border-color:var(--line)}
+.btn.danger{color:var(--warn)}
+.btn[disabled]{opacity:.5;cursor:default}
+
+/* summary */
+.summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.stat{background:var(--surface);padding:14px 16px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.stat .v{font-family:var(--f-display);font-size:24px;font-weight:700;line-height:1.1}
+.stat .s{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat.alert .v{color:var(--warn)}
+@media (max-width:720px){.summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* tabs */
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);overflow-x:auto}
+.tab{border:0;background:none;padding:10px 14px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;display:flex;gap:6px;align-items:center}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.count{font-family:var(--f-mono);font-size:11px;background:var(--sunk);border-radius:999px;padding:1px 7px;color:var(--muted)}
+.tab[aria-selected="true"] .count{background:var(--accent-soft);color:var(--accent)}
+
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.spacer{flex:1}
+.search,.sel{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 12px;font-size:14px;min-width:0}
+.search{width:200px;max-width:100%}
+
+/* season list */
+.month{display:flex;flex-direction:column;gap:8px}
+.month h2{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-family:var(--f-body);font-weight:700;padding:10px 2px 2px}
+.tour{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);display:grid;grid-template-columns:76px minmax(0,1fr);overflow:hidden;position:relative}
+.tour.committed{border-color:color-mix(in srgb,var(--gold) 55%,var(--line));box-shadow:var(--shadow)}
+.tour.skip{opacity:.55}
+.datecol{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px 6px;background:var(--sunk);border-right:1px dashed var(--line);text-align:center;gap:2px}
+.tour.committed .datecol{background:var(--gold-soft)}
+.datecol .mo{font-size:11px;font-weight:700;letter-spacing:.12em;color:var(--muted)}
+.datecol .d{font-family:var(--f-display);font-size:20px;font-weight:800;line-height:1}
+.datecol .dw{font-size:11px;color:var(--muted)}
+.tbody{padding:12px 14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.trow{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;justify-content:space-between}
+.tname{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;min-width:0}
+.tname h3{font-size:19px;font-weight:700}
+.tname button{all:unset;cursor:pointer}
+.tname button:hover h3{color:var(--accent)}
+.meta{font-size:13px;color:var(--muted);display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.meta .dot{opacity:.5}
+.tier{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:4px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.tier.ic{border-color:var(--accent);color:var(--accent)}
+.tier.worlds{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tier.special{border-style:dashed}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--bg)}
+.seg button{border:0;background:none;padding:5px 11px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"].considering{background:var(--accent-soft);color:var(--accent)}
+.seg button[aria-pressed="true"].committed{background:var(--gold);color:#1B1300}
+.seg button[aria-pressed="true"].skip{background:var(--sunk);color:var(--ink)}
+.regs{display:flex;gap:6px;flex-wrap:wrap}
+.reg{border:1px dashed var(--line);background:none;border-radius:999px;padding:4px 10px 4px 8px;font-size:13px;cursor:pointer;color:var(--muted);display:inline-flex;gap:6px;align-items:center}
+.reg .box{width:14px;height:14px;border-radius:4px;border:1.5px solid currentColor;display:grid;place-items:center;font-size:10px;line-height:1}
+.reg[aria-pressed="true"]{border-style:solid;border-color:var(--ok);color:var(--ok);background:var(--ok-soft);font-weight:600}
+.reg[aria-pressed="true"] .box{background:var(--ok);border-color:var(--ok);color:var(--surface)}
+.travel{display:flex;flex-wrap:wrap;gap:8px;align-items:center;border-top:1px solid var(--line);padding-top:10px}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:13px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--bg);cursor:pointer;font-weight:500}
+.pill .lbl{color:var(--muted);font-weight:600}
+.pill i{width:8px;height:8px;border-radius:50%;background:var(--skip);display:inline-block}
+.pill.todo i{background:var(--warn)} .pill.todo{border-color:color-mix(in srgb,var(--warn) 45%,var(--line))}
+.pill.watching i{background:var(--accent)}
+.pill.booked i{background:var(--ok)} .pill.booked{background:var(--ok-soft);border-color:transparent}
+.pill.na{opacity:.7}
+.pill.partial i{background:var(--gold)} .pill.partial{border-color:color-mix(in srgb,var(--gold) 55%,var(--line))}
+.leg{display:grid;grid-template-columns:8px auto minmax(0,1fr) auto;gap:8px;align-items:center;font-size:13px;padding:6px 8px;border-radius:8px;background:var(--surface);border:1px solid var(--line)}
+.leg i{width:8px;height:8px;border-radius:50%;background:var(--skip)}
+.leg.todo i{background:var(--warn)} .leg.watching i{background:var(--accent)} .leg.booked i{background:var(--ok)}
+.leg.booked{background:var(--ok-soft);border-color:transparent}
+.leg.todo{border-color:color-mix(in srgb,var(--warn) 45%,var(--line))}
+.legn{font-weight:700}
+.legd{color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.slot.partial{border-color:color-mix(in srgb,var(--gold) 55%,var(--line))}
+.spend{font-family:var(--f-mono);font-size:13px;color:var(--muted);margin-left:auto}
+
+.empty{background:var(--surface);border:1px dashed var(--line);border-radius:var(--r);padding:28px;text-align:center;color:var(--muted);display:flex;flex-direction:column;gap:10px;align-items:center}
+.empty strong{color:var(--ink);font-family:var(--f-display);font-size:18px}
+
+/* booking board */
+.board{display:flex;flex-direction:column;gap:10px}
+.brow{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}
+.brow .who h3{font-size:17px}
+.slot{border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;background:var(--bg);min-width:0}
+.slot.booked{background:var(--ok-soft);border-color:transparent}
+.slot.todo{border-color:color-mix(in srgb,var(--warn) 50%,var(--line))}
+.slot .hd{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.slot .hd b{font-size:12px;letter-spacing:.1em;text-transform:uppercase}
+.slot .ln{font-size:13px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.slot .ln .mono{color:var(--ink)}
+.bookby{font-size:12px;font-weight:600;color:var(--warn)}
+.bookby.ok{color:var(--muted);font-weight:500}
+@media (max-width:760px){.brow{grid-template-columns:1fr}}
+.section-title{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.section-title h2{font-size:20px}
+.hint{font-size:13px;color:var(--muted);margin:0}
+
+/* spending */
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+@media (max-width:760px){.split{grid-template-columns:1fr}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.panel h3{font-size:15px;font-family:var(--f-body);font-weight:700}
+.bars{display:flex;flex-direction:column;gap:7px}
+.bar{display:grid;grid-template-columns:130px minmax(0,1fr) 84px;gap:10px;align-items:center;font-size:13px}
+.bar .track{height:10px;background:var(--sunk);border-radius:6px;overflow:hidden}
+.bar .fill{height:100%;background:var(--accent);border-radius:6px}
+.bar .amt{text-align:right;font-family:var(--f-mono)}
+.bar .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tablewrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:760px}
+th{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);font-weight:700;background:var(--sunk)}
+td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+tbody tr{cursor:pointer} tbody tr:hover td{background:var(--bg)}
+td.amt,th.amt{text-align:right;font-family:var(--f-mono)}
+.catbadge{font-size:12px;font-weight:600;padding:2px 8px;border-radius:4px;background:var(--sunk);white-space:nowrap}
+.thumbs{display:flex;gap:4px}
+.thumb{width:34px;height:34px;border-radius:6px;object-fit:cover;border:1px solid var(--line);background:var(--sunk);display:grid;place-items:center;font-size:10px;font-weight:700;color:var(--muted)}
+.nofile{font-size:12px;color:var(--warn);font-weight:600}
+.sub{font-size:12px;color:var(--muted)}
+
+/* modal */
+.scrim{position:fixed;inset:0;background:rgba(10,14,28,.5);display:flex;align-items:flex-start;justify-content:center;z-index:50;overflow-y:auto;
+  padding:max(24px,env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) max(24px,env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px))}
+.modal{background:var(--surface);border-radius:16px;width:100%;max-width:640px;box-shadow:0 20px 60px rgba(0,0,0,.3);display:flex;flex-direction:column;border:1px solid var(--line)}
+.modal.wide{max-width:820px}
+.mhead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:18px 20px 12px;border-bottom:1px solid var(--line)}
+.mhead h2{font-size:22px}
+.mbody{padding:16px 20px;display:flex;flex-direction:column;gap:16px}
+.mfoot{display:flex;gap:8px;justify-content:flex-end;padding:12px 20px 18px;border-top:1px solid var(--line);flex-wrap:wrap}
+.mfoot .left{margin-right:auto}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:560px){.grid2,.grid3{grid-template-columns:1fr}}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;color:var(--muted);min-width:0}
+label.f input,label.f select,label.f textarea{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:8px 10px;font-size:14px;color:var(--ink);font-weight:400;width:100%;min-width:0}
+label.f textarea{min-height:70px;resize:vertical}
+.fieldset{border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:12px}
+.fieldset .hd{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.fieldset .hd b{font-family:var(--f-display);font-size:16px}
+.drop{border:2px dashed var(--line);border-radius:12px;padding:22px;text-align:center;display:flex;flex-direction:column;gap:8px;align-items:center;color:var(--muted);cursor:pointer;background:var(--bg)}
+.drop.over{border-color:var(--accent);background:var(--accent-soft)}
+.drop strong{color:var(--ink)}
+.files{display:flex;gap:8px;flex-wrap:wrap}
+.file{position:relative;width:76px;height:76px;border-radius:8px;border:1px solid var(--line);overflow:hidden;background:var(--sunk);display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--muted);text-align:center;padding:4px}
+.file img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.file button{position:absolute;top:2px;right:2px;width:20px;height:20px;border-radius:50%;border:0;background:var(--ink);color:var(--bg);cursor:pointer;font-size:12px;line-height:1;z-index:1}
+.switch{display:inline-flex;background:var(--sunk);border-radius:999px;padding:3px}
+.switch button{border:0;background:none;padding:6px 14px;border-radius:999px;font-weight:600;font-size:13px;cursor:pointer;color:var(--muted)}
+.switch button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+.aibar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--accent-soft);border-radius:10px;padding:10px 12px;font-size:13px}
+.aibar .msg{flex:1;min-width:180px}
+.faresrow{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.spark{width:140px;height:36px;flex:none}
+.farelist{font-size:12px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap}
+.farelist .mono{color:var(--ink)}
+.linky{color:var(--accent);font-weight:600;text-decoration:none;font-size:13px}
+.linky:hover{text-decoration:underline}
+.preview-list{display:flex;flex-direction:column;gap:6px;max-height:360px;overflow-y:auto}
+.prow{display:flex;gap:10px;align-items:center;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:14px}
+.prow .sub{margin-left:auto}
+.confirm{display:flex;gap:8px;align-items:center;background:var(--warn-soft);border-radius:10px;padding:10px 12px;font-size:13px;flex-wrap:wrap}
+.lightbox img{max-width:100%;border-radius:8px;display:block;margin:0 auto}
+
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:max(20px,calc(env(safe-area-inset-bottom,0px) + 12px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;font-weight:600;z-index:60;box-shadow:var(--shadow);max-width:calc(100% - 32px)}
+.authcard{max-width:400px;margin:10vh auto 0;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:28px;display:flex;flex-direction:column;gap:14px;box-shadow:var(--shadow)}
+.authcard h1{font-size:28px;font-weight:800}
+.notice{background:var(--warn-soft);border-radius:var(--r);padding:12px 14px;font-size:14px}
+@media (prefers-reduced-motion:no-preference){.tour,.brow{transition:box-shadow .2s,border-color .2s}}
+</style>
+</head>
+<body>
+
+<div id="auth-root"></div>
+<div class="wrap" id="app" hidden>
+  <header class="top">
+    <div class="brand"><span class="mark" aria-hidden="true"></span>
+      <div><p class="eyebrow">Championship Series · 2026–27 season</p><h1>Tournament Circuit</h1></div>
+    </div>
+    <div class="actions">
+      <button class="btn ghost" data-act="signout" type="button">Sign out</button>
+      <button class="btn" data-act="new-tour" type="button">+ Tournament</button>
+      <button class="btn primary" data-act="new-exp" type="button">+ Receipt or expense</button>
+    </div>
+  </header>
+
+  <div id="banner"></div>
+  <section class="summary" id="summary" aria-label="Season summary"></section>
+
+  <nav class="tabs" role="tablist" id="tabs">
+    <button class="tab" role="tab" data-tab="season" type="button">Season <span class="count" id="c-season">0</span></button>
+    <button class="tab" role="tab" data-tab="book" type="button">To book <span class="count" id="c-book">0</span></button>
+    <button class="tab" role="tab" data-tab="spend" type="button">Spending &amp; receipts <span class="count" id="c-spend">0</span></button>
+  </nav>
+
+  <section id="toolbar" class="toolbar"></section>
+  <main id="view" style="display:flex;flex-direction:column;gap:10px"></main>
+</div>
+<div id="modal-root"></div>
+<div id="toast-root"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
+<script>
+(() => {
+/* ====== Your Supabase project (Project Settings → API) ====== */
+const SUPABASE_URL = "https://czuthhihqzwajvnlfefh.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_-q6VFiUwxLKIIcop_a0Crg_-v-mqbil";
+/* ============================================================= */
+let sb = null;
+const PLAYERS = ["Annabelle","Kenji"];
+const PAYERS = ["Steven","Lynn"];
+const HOME = "SEA";
+const CATS = [
+  ["flight","Flights"],["hotel","Hotel"],["ground","Uber & ground"],["meals","Meals"],["entry","Entry fees"],
+  ["coaching","Coaching"],["learning","Learning tools"],["supplies","Sleeves & supplies"],["cards","Cards"],["other","Other"]];
+const CATLABEL = Object.fromEntries(CATS);
+const TIERS = [["regional","Regional"],["ic","International"],["special","Special Event"],["worlds","Worlds"],["cup","League Cup"],["challenge","League Challenge"],["other","Other"]];
+const TIERLABEL = Object.fromEntries(TIERS);
+const STATUS = {todo:"Needs booking",watching:"Watching fares",booked:"Booked",na:"Not needed"};
+const LEGS = [["out","Outbound"],["ret","Return"]];
+const LEGNAME = {out:"Outbound",ret:"Return",rt:"Round trip"};
+const CURR = ["USD","EUR","GBP","CAD","AUD","MXN","BRL","Other"];
+
+const S = {tours:new Map(), exps:new Map(), loaded:{t:false,e:false}, tab:"season",
+  filt:"upcoming", spendQ:"", spendTour:"", spendCat:"", db:null, assets:null, sample:null, canImages:false, downloads:null, readOnly:false};
+
+try{ const h=(location.hash||"").slice(1); if(["season","book","spend"].includes(h)) S.tab=h; }catch(e){}
+try{ const f=localStorage.getItem("tc-filt"); if(f) S.filt=f; }catch(e){}
+
+/* ---------- utils ---------- */
+const $ = (s,r=document)=>r.querySelector(s);
+const esc = s => String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const todayISO = () => { const d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); };
+const D = iso => iso ? new Date(iso+"T12:00:00") : null;
+const addDays = (iso,n)=>{const d=D(iso); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10);};
+const daysUntil = iso => Math.round((D(iso)-D(todayISO()))/86400000);
+const fmtD = (iso,o={month:"short",day:"numeric"}) => iso ? D(iso).toLocaleDateString("en-US",o) : "";
+const MO = iso => D(iso).toLocaleDateString("en-US",{month:"short"}).toUpperCase();
+function dayRange(t){ if(!t.start) return ""; const a=D(t.start), b=D(t.end||t.start);
+  if(a.getMonth()===b.getMonth()) return a.getDate()===b.getDate()? String(a.getDate()) : a.getDate()+"–"+b.getDate();
+  return a.getDate()+"–"+b.toLocaleDateString("en-US",{month:"short"})+" "+b.getDate(); }
+const money = (n,c="USD") => { if(n==null||n==="") return ""; try{ return new Intl.NumberFormat("en-US",{style:"currency",currency:c==="Other"?"USD":c,maximumFractionDigits:2}).format(+n);}catch(e){return "$"+(+n).toFixed(2);} };
+const money0 = n => new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0}).format(n||0);
+const slug = s => String(s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,60);
+const uid = () => Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+function toast(msg){ const r=$("#toast-root"); r.innerHTML=`<div class="toast" role="status">${esc(msg)}</div>`; clearTimeout(toast.t); toast.t=setTimeout(()=>r.innerHTML="",2600); }
+const tourList = () => [...S.tours.values()].sort((a,b)=>(a.start||"").localeCompare(b.start||""));
+const isPast = t => (t.end||t.start||"9999") < todayISO();
+const plan = t => t.plan || "none";
+const expsFor = id => [...S.exps.values()].filter(e=>e.tournamentId===id);
+const usdTotal = list => list.filter(e=>(e.currency||"USD")==="USD").reduce((s,e)=>s+(+e.amount||0),0);
+const travelNeeded = t => plan(t)==="committed" && !isPast(t);
+const legStat = (t,l) => { const f=t.flight||{}; return (f.legs&&f.legs[l]) || f.status || "todo"; };
+const fStat = t => { const a=legStat(t,"out"), b=legStat(t,"ret"), done=x=>x==="booked"||x==="na";
+  if(a==="na"&&b==="na") return "na"; if(done(a)&&done(b)) return "booked";
+  if(a==="booked"||b==="booked") return "partial"; if(a==="watching"||b==="watching") return "watching"; return "todo"; };
+const isOpen = s => s==="todo"||s==="watching";
+const hStat = t => (t.hotel&&t.hotel.status)||"todo";
+const outstanding = t => travelNeeded(t) ? [...LEGS.map(l=>l[0]).filter(l=>isOpen(legStat(t,l))), ...(isOpen(hStat(t))?["hotel"]:[])] : [];
+const bookBy = t => { const intl = t.country && !["US","USA","United States"].includes(t.country); return addDays(t.start, intl?-70:-45); };
+
+/* ---------- writes (one at a time per doc) ---------- */
+const q = {};
+function write(path, fn){ q[path]=(q[path]||Promise.resolve()).then(fn).catch(err=>{ console.error(err);
+  if(err&&(err.code==="42501"||/row-level security/i.test(err.message||""))) toast("This login isn't on the family list. Add the email to allowed_emails in Supabase.");
+  else toast("Couldn't save. Check your connection and try again."); }); return q[path]; }
+function patchTour(id, patch){ const t=S.tours.get(id); if(t){ deepMerge(t,patch); } render();
+  if(!S.db) return; return saveDoc("tournaments",id); }
+const strip = o => { const {id, ...rest} = o; return rest; };
+function saveDoc(table,id){ return write(table+"/"+id, async()=>{ const o=(table==="tournaments"?S.tours:S.exps).get(id); if(!o) return;
+  const {error}=await sb.from(table).upsert({id,data:strip(o),updated_at:new Date().toISOString()}); if(error) throw error; }); }
+function delDoc(table,id){ return write(table+"/"+id, async()=>{ const {error}=await sb.from(table).delete().eq("id",id); if(error) throw error; }); }
+function deepMerge(a,b){ for(const k in b){ if(b[k]&&typeof b[k]==="object"&&!Array.isArray(b[k])){ a[k]=a[k]&&typeof a[k]==="object"?a[k]:{}; deepMerge(a[k],b[k]); } else a[k]=b[k]; } return a; }
+
+/* ---------- summary ---------- */
+function renderSummary(){
+  const ts=tourList(), up=ts.filter(t=>!isPast(t));
+  const committed=up.filter(t=>plan(t)==="committed");
+  const next=committed[0];
+  const outCount=up.reduce((n,t)=>n+outstanding(t).length,0);
+  const exps=[...S.exps.values()];
+  const total=usdTotal(exps);
+  const missing=exps.filter(e=>!hasReceipt(e)).length;
+  $("#summary").innerHTML=`
+    <div class="stat"><span class="eyebrow">Committed</span><span class="v num">${committed.length}</span><span class="s">${up.filter(t=>plan(t)==="considering").length} more being considered</span></div>
+    <div class="stat"><span class="eyebrow">Next trip</span><span class="v">${next?esc(next.city||next.name):"—"}</span><span class="s">${next?`${fmtD(next.start)} · in ${daysUntil(next.start)} days`:"Mark a tournament as committed"}</span></div>
+    <div class="stat ${outCount?"alert":""}"><span class="eyebrow">Still to book</span><span class="v num">${outCount}</span><span class="s">${outCount?"flights & hotels outstanding":"All committed trips booked"}</span></div>
+    <div class="stat"><span class="eyebrow">Season spend</span><span class="v num">${money0(total)}</span><span class="s">${exps.length} expenses${missing?` · ${missing} without receipt`:""}</span></div>`;
+  $("#c-season").textContent=up.length;
+  $("#c-book").textContent=outCount;
+  $("#c-spend").textContent=exps.length;
+}
+
+/* ---------- tabs / toolbar ---------- */
+function setTab(t){ S.tab=t; try{history.replaceState(null,"","#"+t);}catch(e){} renderToolbar(); render(); }
+function renderToolbar(){
+  document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===S.tab));
+  const tb=$("#toolbar");
+  if(S.tab==="season"){
+    const f=[["upcoming","All upcoming"],["considering","Considering"],["committed","Committed"],["past","Past"]];
+    tb.innerHTML=f.map(([k,l])=>`<button class="chip" type="button" data-filt="${k}" aria-pressed="${S.filt===k}">${l}</button>`).join("")+
+      `<span class="spacer"></span>`;
+  } else if(S.tab==="book"){
+    tb.innerHTML=`<p class="hint">Committed trips with flights or hotels still open. Log fares as you check them; the chart shows the trend. Home airport: <b class="mono">${HOME}</b>.</p>`;
+  } else {
+    tb.innerHTML=`<input class="search" id="sp-q" type="search" placeholder="Search vendor, notes, confirmation" value="${esc(S.spendQ)}" aria-label="Search expenses">
+      <select class="sel" id="sp-tour" aria-label="Tournament"><option value="">All tournaments</option><option value="__general" ${S.spendTour==="__general"?"selected":""}>Season / general</option>${tourList().filter(t=>expsFor(t.id).length).map(t=>`<option value="${esc(t.id)}" ${S.spendTour===t.id?"selected":""}>${esc(t.name)}</option>`).join("")}</select>
+      <select class="sel" id="sp-cat" aria-label="Category"><option value="">All categories</option>${CATS.map(([k,l])=>`<option value="${k}" ${S.spendCat===k?"selected":""}>${l}</option>`).join("")}</select>
+      <span class="spacer"></span>${S.downloads?`<button class="btn small" type="button" data-act="csv">Export for taxes (CSV)</button>`:""}`;
+  }
+}
+
+/* ---------- views ---------- */
+function render(){
+  renderSummary();
+  const v=$("#view");
+  if(!S.loaded.t && S.db){ v.innerHTML=`<div class="empty">Loading your season…</div>`; return; }
+  if(S.tab==="season") v.innerHTML=seasonView();
+  else if(S.tab==="book") v.innerHTML=bookView();
+  else v.innerHTML=spendView();
+}
+
+function seasonView(){
+  let ts=tourList();
+  if(S.filt==="past") ts=ts.filter(isPast).reverse();
+  else { ts=ts.filter(t=>!isPast(t)); if(S.filt!=="upcoming") ts=ts.filter(t=>plan(t)===S.filt); }
+  if(!S.tours.size) return `<div class="empty"><strong>No tournaments yet</strong><span>Add the events you're looking at this season.</span><div class="actions"><button class="btn primary" data-act="new-tour" type="button">+ Tournament</button></div></div>`;
+  if(!ts.length) return `<div class="empty"><strong>Nothing here yet</strong><span>${S.filt==="committed"?"Tap Committed on a tournament once you've decided to go.":S.filt==="considering"?"Tap Considering on any event you're weighing.":"No tournaments in this view."}</span></div>`;
+  const groups=new Map();
+  ts.forEach(t=>{ const k=t.start?D(t.start).toLocaleDateString("en-US",{month:"long",year:"numeric"}):"Date TBD"; if(!groups.has(k)) groups.set(k,[]); groups.get(k).push(t); });
+  return [...groups].map(([m,list])=>`<section class="month"><h2>${esc(m)}</h2>${list.map(tourCard).join("")}</section>`).join("");
+}
+
+function tourCard(t){
+  const p=plan(t), reg=t.registered||{};
+  const exps=expsFor(t.id), spent=usdTotal(exps);
+  const dU=t.start?daysUntil(t.start):null;
+  const showTravel = (p==="committed"||p==="considering") && !isPast(t);
+  const tierCls = {ic:"ic",worlds:"worlds",special:"special"}[t.tier]||"";
+  return `<article class="tour ${p}" data-id="${esc(t.id)}">
+    <div class="datecol">${t.start?`<span class="mo">${MO(t.start)}</span><span class="d">${dayRange(t)}</span><span class="dw">${D(t.start).toLocaleDateString("en-US",{weekday:"short"})}</span>`:`<span class="mo">TBD</span>`}</div>
+    <div class="tbody">
+      <div class="trow">
+        <div class="tname"><button type="button" data-act="open-tour" data-id="${esc(t.id)}"><h3>${esc(t.name)}</h3></button><span class="tier ${tierCls}">${esc(TIERLABEL[t.tier]||"Event")}</span></div>
+        <div class="seg" role="group" aria-label="Plan">
+          ${["considering","committed","skip"].map(k=>`<button type="button" class="${k}" data-act="plan" data-id="${esc(t.id)}" data-v="${k}" aria-pressed="${p===k}">${{considering:"Considering",committed:"Committed",skip:"Skip"}[k]}</button>`).join("")}
+        </div>
+      </div>
+      <div class="trow">
+        <div class="meta">${esc([t.city,t.country].filter(Boolean).join(", "))}${t.airport?`<span class="dot">·</span><span class="mono">${esc(t.airport)}</span>`:""}${dU!=null&&dU>=0?`<span class="dot">·</span>${dU===0?"today":`in ${dU} days`}`:""}</div>
+        <div class="regs">${PLAYERS.map(n=>`<button type="button" class="reg" data-act="reg" data-id="${esc(t.id)}" data-v="${n}" aria-pressed="${!!reg[n]}"><span class="box">${reg[n]?"✓":""}</span>${n} ${reg[n]?"registered":"not registered"}</button>`).join("")}</div>
+      </div>
+      ${showTravel||exps.length?`<div class="travel">
+        ${showTravel?[...LEGS.map(([l,n])=>[n,legStat(t,l)]),["Hotel",hStat(t)]].map(([n,s])=>`<button type="button" class="pill ${s}" data-act="open-tour" data-id="${esc(t.id)}"><i></i><span class="lbl">${n}</span>${STATUS[s]}</button>`).join(""):""}
+        ${exps.length?`<span class="spend">${money0(spent)} spent · ${exps.length} item${exps.length>1?"s":""}</span>`:""}
+      </div>`:""}
+    </div>
+  </article>`;
+}
+
+function spark(fares){
+  const pts=(fares||[]).filter(f=>f&&f.price>0);
+  if(pts.length<2) return "";
+  const W=140,H=36,P=4, ys=pts.map(f=>+f.price), mn=Math.min(...ys), mx=Math.max(...ys), span=mx-mn||1;
+  const xy=pts.map((f,i)=>[P+i*(W-2*P)/(pts.length-1), H-P-((+f.price-mn)/span)*(H-2*P)]);
+  const line=xy.map(p=>p.map(n=>n.toFixed(1)).join(",")).join(" ");
+  const last=xy[xy.length-1], lowI=ys.indexOf(mn);
+  return `<svg class="spark" viewBox="0 0 ${W} ${H}" aria-label="Fare trend">
+    <line x1="${P}" x2="${W-P}" y1="${xy[lowI][1].toFixed(1)}" y2="${xy[lowI][1].toFixed(1)}" stroke="var(--ok)" stroke-dasharray="2 3" stroke-width="1"/>
+    <polygon points="${P},${H-P} ${line} ${(W-P).toFixed(1)},${H-P}" fill="var(--accent-soft)"/>
+    <polyline points="${line}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round"/>
+    <circle cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="3.2" fill="var(--accent)"/></svg>`;
+}
+
+function slotHTML(t,k){
+  const o=t[k]||{}, s=k==="flight"?fStat(t):hStat(t);
+  const bookings=expsFor(t.id).filter(e=>e.category===k);
+  const fares=(o.fares||[]).filter(f=>f.price>0), low=fares.length?Math.min(...fares.map(f=>+f.price)):null, last=fares[fares.length-1];
+  const sel=(v,leg,label)=>`<select class="sel" style="padding:3px 8px;font-size:12px" data-act="status" data-id="${esc(t.id)}" data-k="${k}" ${leg?`data-leg="${leg}"`:""} aria-label="${label} status">${Object.entries(STATUS).map(([x,l])=>`<option value="${x}" ${v===x?"selected":""}>${l}</option>`).join("")}</select>`;
+  const ap=esc(t.airport||"?");
+  return `<div class="slot ${s}">
+    <div class="hd"><b>${k==="flight"?"Flights":"Hotel"}</b>${k==="hotel"?sel(s,null,"Hotel"):""}</div>
+    ${k==="flight"?LEGS.map(([l,n])=>{const ls=legStat(t,l); return `<div class="leg ${ls}"><i></i><span class="legn">${n}</span><span class="legd mono">${l==="out"?`${HOME} → ${ap}`:`${ap} → ${HOME}`}</span>${sel(ls,l,n)}</div>`;}).join(""):""}
+    ${bookings.length?bookings.map(b=>`<div class="ln">${b.leg?`<b>${LEGNAME[b.leg]||""}</b>`:""}<span>${esc(b.vendor||CATLABEL[k])}</span>${b.confirmation?`<span class="mono">${esc(b.confirmation)}</span>`:""}<span class="mono">${money(b.amount,b.currency)}</span>${hasReceipt(b)?"":`<span class="nofile">no receipt</span>`}</div>`).join(""):""}
+    ${s!=="booked"&&s!=="na"?`<div class="ln">${o.target?`Target <span class="mono">${money(o.target)}</span>`:""}${last?`Last <span class="mono">${money(last.price)}</span> ${fmtD(last.date)}`:""}${low!=null&&fares.length>1?`Low <span class="mono">${money(low)}</span>`:""}</div>${spark(o.fares)}`:""}
+    <div class="ln">${k==="flight"?`<a class="linky" target="_blank" rel="noopener" href="${esc(flightURL(t,"out"))}">Outbound fares ↗</a><a class="linky" target="_blank" rel="noopener" href="${esc(flightURL(t,"ret"))}">Return fares ↗</a>`:`<a class="linky" target="_blank" rel="noopener" href="${esc(hotelURL(t))}">Search hotels ↗</a>`}<button type="button" class="btn small ghost" data-act="open-tour" data-id="${esc(t.id)}">Log fare · details</button></div>
+  </div>`;
+}
+
+function flightURL(t,leg){ const f=t.flight||{}; const dep=f.depart||(t.start?addDays(t.start,-1):""), ret=f.return||t.end||"";
+  const to=t.airport||t.city||t.name;
+  const q = leg==="out"?`One way flights from ${HOME} to ${to} on ${dep}` : leg==="ret"?`One way flights from ${to} to ${HOME} on ${ret}` : `Flights from ${HOME} to ${to} on ${dep} through ${ret}`;
+  return "https://www.google.com/travel/flights?q="+encodeURIComponent(q); }
+function hotelURL(t){ const h=t.hotel||{}; const ci=h.checkin||(t.start?addDays(t.start,-1):""), co=h.checkout||t.end||"";
+  return "https://www.google.com/travel/search?q="+encodeURIComponent(`hotels near ${t.venue||t.city||t.name} ${ci} to ${co}`); }
+
+function bookView(){
+  const up=tourList().filter(t=>travelNeeded(t));
+  const open=up.filter(t=>outstanding(t).length), done=up.filter(t=>!outstanding(t).length);
+  const missing=[...S.exps.values()].filter(e=>(e.category==="flight"||e.category==="hotel")&&!hasReceipt(e));
+  if(!up.length) return `<div class="empty"><strong>No committed trips yet</strong><span>Mark a tournament as <b>Committed</b> on the Season tab and its flight and hotel show up here to track.</span><button class="btn" type="button" data-tabgo="season">Go to Season</button></div>`;
+  const row=t=>{ const bb=bookBy(t), dd=daysUntil(bb); const anyOpen=outstanding(t).length;
+    return `<div class="brow"><div class="who"><p class="eyebrow">${fmtD(t.start,{month:"short",day:"numeric"})}–${fmtD(t.end||t.start,{month:"short",day:"numeric"})}</p><h3>${esc(t.name)}</h3>
+      <div class="meta">${esc(t.city||"")}${t.airport?` · <span class="mono">${esc(HOME)} → ${esc(t.airport)}</span>`:""}</div>
+      ${anyOpen?`<div class="bookby ${dd>14?"ok":""}">${dd<0?`Book now · aimed for ${fmtD(bb)}`:`Aim to book by ${fmtD(bb)} (${dd} days)`}</div>`:`<div class="bookby ok">All booked</div>`}
+      <div class="meta">${PLAYERS.map(n=>`${n}: ${(t.registered||{})[n]?"registered ✓":"<b style='color:var(--warn)'>not registered</b>"}`).join(" · ")}</div></div>
+      ${slotHTML(t,"flight")}${slotHTML(t,"hotel")}</div>`; };
+  return `${open.length?`<div class="board">${open.map(row).join("")}</div>`:`<div class="empty"><strong>Everything is booked</strong><span>Every committed trip has its flight and hotel sorted.</span></div>`}
+    ${missing.length?`<div class="section-title"><h2>Bookings without a receipt</h2><p class="hint">Attach the confirmation so it's ready at tax time.</p></div>
+      <div class="board">${missing.map(e=>`<div class="prow" style="background:var(--surface)"><span class="catbadge">${CATLABEL[e.category]}</span><b>${esc(e.vendor||"")}</b><span class="mono">${esc(e.confirmation||"")}</span><span class="sub">${esc((S.tours.get(e.tournamentId)||{}).name||"")}</span><button class="btn small" type="button" data-act="open-exp" data-id="${esc(e.id)}">Attach</button></div>`).join("")}</div>`:""}
+    ${done.length?`<div class="section-title"><h2>Booked</h2></div><div class="board">${done.map(row).join("")}</div>`:""}`;
+}
+
+function filteredExps(){
+  const qq=S.spendQ.trim().toLowerCase();
+  return [...S.exps.values()].filter(e=>{
+    if(S.spendTour==="__general"&&e.tournamentId) return false;
+    if(S.spendTour&&S.spendTour!=="__general"&&e.tournamentId!==S.spendTour) return false;
+    if(S.spendCat&&e.category!==S.spendCat) return false;
+    if(qq&&![e.vendor,e.notes,e.description,e.confirmation,(S.tours.get(e.tournamentId)||{}).name].join(" ").toLowerCase().includes(qq)) return false;
+    return true; }).sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+}
+
+function spendView(){
+  const all=[...S.exps.values()];
+  if(!all.length) return `<div class="empty"><strong>No expenses yet</strong><span>Snap a photo of a receipt, drop in a screenshot or PDF, or paste a confirmation email, then fill in the amount.</span><button class="btn primary" data-act="new-exp" type="button">+ Receipt or expense</button></div>`;
+  const list=filteredExps();
+  const byCat=new Map(); list.forEach(e=>{ if((e.currency||"USD")!=="USD") return; byCat.set(e.category,(byCat.get(e.category)||0)+(+e.amount||0)); });
+  const byTour=new Map(); list.forEach(e=>{ if((e.currency||"USD")!=="USD") return; const k=e.tournamentId||"__general"; byTour.set(k,(byTour.get(k)||0)+(+e.amount||0)); });
+  const foreign={}; list.forEach(e=>{ const c=e.currency||"USD"; if(c!=="USD") foreign[c]=(foreign[c]||0)+(+e.amount||0); });
+  const bars=(m,label)=>{ const arr=[...m].sort((a,b)=>b[1]-a[1]), mx=Math.max(1,...arr.map(a=>a[1]));
+    return arr.length?arr.map(([k,v])=>`<div class="bar"><span class="nm" title="${esc(label(k))}">${esc(label(k))}</span><span class="track"><span class="fill" style="width:${(v/mx*100).toFixed(1)}%;display:block"></span></span><span class="amt">${money0(v)}</span></div>`).join(""):`<p class="hint">No USD expenses in this view.</p>`; };
+  const total=usdTotal(list);
+  const payer={}; list.forEach(e=>{ if((e.currency||"USD")==="USD") payer[e.paidBy||"—"]=(payer[e.paidBy||"—"]||0)+(+e.amount||0); });
+  return `<div class="split">
+      <div class="panel"><div class="section-title"><h3>By category</h3><span class="num" style="font-weight:600">${money(total)}</span></div><div class="bars">${bars(byCat,k=>CATLABEL[k]||k)}</div>
+        ${Object.keys(foreign).length?`<p class="hint">Plus ${Object.entries(foreign).map(([c,v])=>money(v,c)).join(", ")} in other currencies.</p>`:""}
+        <p class="hint">Paid by: ${Object.entries(payer).map(([k,v])=>`${esc(k)} ${money0(v)}`).join(" · ")}</p></div>
+      <div class="panel"><h3>By tournament</h3><div class="bars">${bars(byTour,k=>k==="__general"?"Season / general":(S.tours.get(k)||{}).name||"Removed tournament")}</div></div>
+    </div>
+    <div class="tablewrap"><table><thead><tr><th>Date</th><th>Vendor</th><th>Category</th><th>Tournament</th><th>Paid by</th><th class="amt">Amount</th><th>Receipt</th></tr></thead><tbody>
+      ${list.map(e=>`<tr data-act="open-exp" data-id="${esc(e.id)}"><td class="mono">${fmtD(e.date,{month:"short",day:"numeric",year:"2-digit"})}</td>
+        <td><b>${esc(e.vendor||"—")}</b>${e.description?`<div class="sub">${esc(e.description)}</div>`:""}${e.confirmation?`<div class="sub mono">${esc(e.confirmation)}</div>`:""}</td>
+        <td><span class="catbadge">${esc(CATLABEL[e.category]||"Other")}${e.category==="flight"&&e.leg?" · "+esc(LEGNAME[e.leg]||""):""}</span></td>
+        <td>${esc(e.tournamentId?((S.tours.get(e.tournamentId)||{}).name||"—"):"Season / general")}</td>
+        <td>${esc(e.paidBy||"")}</td><td class="amt">${money(e.amount,e.currency)}</td>
+        <td>${hasReceipt(e)?`<div class="thumbs">${(e.receipts||[]).slice(0,3).map(thumb).join("")}${e.emailText?`<span class="thumb">EMAIL</span>`:""}</div>`:`<span class="nofile">missing</span>`}</td></tr>`).join("")}
+      ${!list.length?`<tr><td colspan="7" class="hint">No expenses match these filters.</td></tr>`:""}
+    </tbody></table></div>`;
+}
+const BLANK="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+S.urls={}; const urlPending=new Set(); let urlTimer=null;
+function fileURL(r){ const p=r&&r.path; if(!p) return BLANK; if(S.urls[p]) return S.urls[p];
+  if(!urlPending.has(p)){ urlPending.add(p); clearTimeout(urlTimer); urlTimer=setTimeout(fetchURLs,40); } return BLANK; }
+async function fetchURLs(){ const paths=[...urlPending]; if(!paths.length||!sb) return;
+  const {data,error}=await sb.storage.from("receipts").createSignedUrls(paths,60*60*6); if(error||!data) return;
+  data.forEach(x=>{ if(x.signedUrl){ S.urls[x.path]=x.signedUrl; urlPending.delete(x.path); } }); render(); if(S.draft) renderFiles(); }
+async function openFile(path,type){ if(!path) return; const w=/^image\//.test(type)?null:window.open("","_blank");
+  const {data,error}=await sb.storage.from("receipts").createSignedUrl(path,60*30); if(error||!data){ if(w) w.close(); toast("Couldn't open that file."); return; }
+  if(w) w.location=data.signedUrl; else viewFile(data.signedUrl,type); }
+function thumb(r){ return /^image\//.test(r.type||"")?`<img class="thumb" alt="" src="${fileURL(r)}" loading="lazy">`:`<span class="thumb">${esc((r.name||"FILE").split(".").pop().toUpperCase().slice(0,4))}</span>`; }
+
+/* ---------- modals ---------- */
+function openModal(html, cls=""){ $("#modal-root").innerHTML=`<div class="scrim" data-scrim><div class="modal ${cls}" role="dialog" aria-modal="true">${html}</div></div>`; const f=$("#modal-root input, #modal-root select, #modal-root textarea"); if(f) setTimeout(()=>f.focus({preventScroll:true}),30); }
+function closeModal(){ $("#modal-root").innerHTML=""; S.draft=null; }
+const val = id => { const el=document.getElementById(id); return el?el.value.trim():""; };
+
+/* tournament editor */
+function tourForm(t={}){
+  return `<div class="grid2">
+    <label class="f" style="grid-column:1/-1">Name<input id="t-name" value="${esc(t.name||"")}" placeholder="Las Vegas Regional Championships"></label>
+    <label class="f">Type<select id="t-tier">${TIERS.map(([k,l])=>`<option value="${k}" ${t.tier===k?"selected":""}>${l}</option>`).join("")}</select></label>
+    <label class="f">Nearest airport<input id="t-airport" value="${esc(t.airport||"")}" placeholder="LAS" maxlength="4" style="text-transform:uppercase"></label>
+    <label class="f">Starts<input id="t-start" type="date" value="${esc(t.start||"")}"></label>
+    <label class="f">Ends<input id="t-end" type="date" value="${esc(t.end||"")}"></label>
+    <label class="f">City<input id="t-city" value="${esc(t.city||"")}"></label>
+    <label class="f">Country<input id="t-country" value="${esc(t.country||"")}" placeholder="US"></label>
+    <label class="f" style="grid-column:1/-1">Venue<input id="t-venue" value="${esc(t.venue||"")}" placeholder="Convention center"></label>
+    <label class="f" style="grid-column:1/-1">Notes<textarea id="t-notes" placeholder="Registration opens…, decklists due…, who's flying">${esc(t.notes||"")}</textarea></label></div>`;
+}
+function readTourForm(){ return {name:val("t-name"),tier:val("t-tier"),airport:val("t-airport").toUpperCase(),start:val("t-start"),end:val("t-end")||val("t-start"),city:val("t-city"),country:val("t-country"),venue:val("t-venue"),notes:val("t-notes")}; }
+
+function newTour(){
+  openModal(`<div class="mhead"><div><p class="eyebrow">Season</p><h2>Add a tournament</h2></div><button class="btn small ghost" data-act="close" type="button">Close</button></div>
+    <div class="mbody">${tourForm()}</div>
+    <div class="mfoot"><button class="btn" data-act="close" type="button">Cancel</button><button class="btn primary" data-act="save-new-tour" type="button">Add tournament</button></div>`);
+}
+async function saveNewTour(){
+  const f=readTourForm(); if(!f.name||!f.start){ toast("Add a name and start date."); return; }
+  const id=(f.start.slice(0,7)+"-"+slug(f.city||f.name)) + (S.tours.has(f.start.slice(0,7)+"-"+slug(f.city||f.name))?"-"+uid().slice(-4):"");
+  const doc={...f,plan:"considering",registered:{},flight:{status:"todo",fares:[]},hotel:{status:"todo",fares:[]},createdAt:new Date().toISOString()};
+  S.tours.set(id,{id,...doc}); closeModal(); render(); toast("Tournament added");
+  if(S.db) saveDoc("tournaments",id);
+}
+
+function openTour(id){
+  const t=S.tours.get(id); if(!t) return;
+  const exps=expsFor(id);
+  const travelBlock=k=>{ const o=t[k]||{}, s=k==="flight"?fStat(t):hStat(t), fares=o.fares||[];
+    const opts=v=>Object.entries(STATUS).map(([x,l])=>`<option value="${x}" ${v===x?"selected":""}>${l}</option>`).join("");
+    const ap=esc(t.airport||t.city||"");
+    return `<div class="fieldset"><div class="hd"><b>${k==="flight"?"Flights":"Hotel"}</b>
+      ${k==="hotel"?`<select class="sel" id="hotel-status">${opts(s)}</select>`:""}</div>
+      ${k==="flight"?`<div class="grid2">${LEGS.map(([l,n])=>`<label class="f">${n} · ${l==="out"?`${HOME} → ${ap}`:`${ap} → ${HOME}`}<select id="flight-${l}-status">${opts(legStat(t,l))}</select></label>`).join("")}</div>`:""}
+      <div class="grid3">
+        ${k==="flight"?`<label class="f">Depart<input id="flight-depart" type="date" value="${esc(o.depart||(t.start?addDays(t.start,-1):""))}"></label><label class="f">Return<input id="flight-return" type="date" value="${esc(o.return||t.end||"")}"></label><label class="f">Travelers<input id="flight-pax" type="number" min="1" value="${esc(o.pax||4)}"></label>`
+          :`<label class="f">Check in<input id="hotel-checkin" type="date" value="${esc(o.checkin||(t.start?addDays(t.start,-1):""))}"></label><label class="f">Check out<input id="hotel-checkout" type="date" value="${esc(o.checkout||t.end||"")}"></label><label class="f">Hotel<input id="hotel-name" value="${esc(o.name||"")}" placeholder="Shortlist or booked"></label>`}
+        <label class="f">Target ${k==="flight"?"total fare":"nightly rate"}<input id="${k}-target" type="number" min="0" step="1" value="${esc(o.target||"")}" placeholder="$"></label>
+        <label class="f">Price seen today<input id="${k}-seen" type="number" min="0" step="1" placeholder="$"></label>
+        <div style="display:flex;align-items:flex-end"><button class="btn small" type="button" data-act="log-fare" data-k="${k}" data-id="${esc(id)}">Log price</button></div>
+      </div>
+      <div class="faresrow">${spark(fares)}<div class="farelist">${fares.slice(-6).reverse().map(f=>`<span>${fmtD(f.date)} <span class="mono">${money(f.price)}</span></span>`).join("")||"No prices logged yet."}</div></div>
+      <div class="faresrow">${k==="flight"?`<a class="linky" target="_blank" rel="noopener" href="${esc(flightURL(t,"out"))}">One-way outbound fares ↗</a><a class="linky" target="_blank" rel="noopener" href="${esc(flightURL(t,"ret"))}">One-way return fares ↗</a><a class="linky" target="_blank" rel="noopener" href="${esc(flightURL(t))}">Round-trip fares ↗</a>`:`<a class="linky" target="_blank" rel="noopener" href="${esc(hotelURL(t))}">Search hotels near the venue ↗</a>`}</div></div>`; };
+  openModal(`<div class="mhead"><div><p class="eyebrow">${esc(TIERLABEL[t.tier]||"Event")} · ${fmtD(t.start,{month:"short",day:"numeric",year:"numeric"})}</p><h2>${esc(t.name)}</h2></div><button class="btn small ghost" data-act="close" type="button">Close</button></div>
+    <div class="mbody">
+      ${travelBlock("flight")}${travelBlock("hotel")}
+      <div class="fieldset"><div class="hd"><b>Expenses for this trip</b><button class="btn small" type="button" data-act="new-exp" data-tour="${esc(id)}">+ Add</button></div>
+        ${exps.length?exps.sort((a,b)=>(a.date||"").localeCompare(b.date||"")).map(e=>`<div class="prow" style="cursor:pointer" data-act="open-exp" data-id="${esc(e.id)}"><span class="catbadge">${CATLABEL[e.category]||"Other"}</span><span>${esc(e.vendor||"")}</span><span class="sub mono">${money(e.amount,e.currency)}</span></div>`).join(""):`<p class="hint">Nothing logged yet.</p>`}
+        ${exps.length?`<p class="hint">Total ${money(usdTotal(exps))}</p>`:""}</div>
+      <details><summary class="hint" style="cursor:pointer">Edit event details</summary><div style="padding-top:12px">${tourForm(t)}</div></details>
+      <div id="del-zone"></div>
+    </div>
+    <div class="mfoot"><button class="btn small ghost danger left" data-act="del-tour" data-id="${esc(id)}" type="button">Delete tournament</button><button class="btn" data-act="close" type="button">Cancel</button><button class="btn primary" data-act="save-tour" data-id="${esc(id)}" type="button">Save</button></div>`, "wide");
+}
+function saveTour(id){
+  const t=S.tours.get(id); if(!t) return;
+  const f=readTourForm(); if(!f.name){ toast("The tournament needs a name."); return; }
+  const patch={...f,
+    flight:{legs:{out:val("flight-out-status"),ret:val("flight-ret-status")},depart:val("flight-depart"),return:val("flight-return"),pax:+val("flight-pax")||null,target:+val("flight-target")||null},
+    hotel:{status:val("hotel-status"),checkin:val("hotel-checkin"),checkout:val("hotel-checkout"),name:val("hotel-name"),target:+val("hotel-target")||null}};
+  closeModal(); patchTour(id,patch); toast("Saved");
+}
+function logFare(id,k){
+  const t=S.tours.get(id), p=+val(k+"-seen"); if(!t||!(p>0)){ toast("Enter the price you saw first."); return; }
+  const fares=[...((t[k]||{}).fares||[]), {date:todayISO(),price:p}].slice(-40);
+  let extra={};
+  if(k==="flight"){ const legs={}; LEGS.forEach(([l])=>{ if(legStat(t,l)==="todo") legs[l]="watching"; }); if(Object.keys(legs).length) extra={legs}; }
+  else { const st=(t[k]||{}).status; if(st==="todo"||!st) extra={status:"watching"}; }
+  const patch={[k]:{fares,...extra}};
+  patchTour(id,patch); openTour(id); toast("Price logged");
+}
+
+/* import a schedule */
+function openImport(){
+  openModal(`<div class="mhead"><div><p class="eyebrow">Season</p><h2>Paste a schedule</h2></div><button class="btn small ghost" data-act="close" type="button">Close</button></div>
+    <div class="mbody"><p class="hint">Copy the event list from the Championships site (or any list of events) and paste it here. Claude pulls out names, dates and cities; you choose which to add.</p>
+      <label class="f">Schedule text<textarea id="imp-text" style="min-height:180px" placeholder="Las Vegas Regional Championships · Dec 4–6, 2026 · Las Vegas, NV…"></textarea></label>
+      <div id="imp-out"></div></div>
+    <div class="mfoot"><button class="btn" data-act="close" type="button">Cancel</button><button class="btn primary" id="imp-go" data-act="imp-parse" type="button" ${S.sample?"":"disabled"}>Read schedule</button></div>`);
+  if(!S.sample) $("#imp-out").innerHTML=`<p class="notice">Reading pasted text needs Claude, which isn't available in this view. Add tournaments one at a time instead.</p>`;
+}
+async function parseImport(){
+  const txt=val("imp-text").slice(0,60000); if(!txt){ toast("Paste the schedule first."); return; }
+  const out=$("#imp-out"), btn=$("#imp-go"); btn.disabled=true; out.innerHTML=`<div class="aibar"><span class="msg">Reading the schedule…</span></div>`;
+  try{
+    const arr=await S.sample.json(`Extract every tournament/event from the schedule text below. Today is ${todayISO()}; the 2026-27 season runs Sep 2026 to Aug 2027, so infer missing years from that.
+Reply with only a JSON array of objects: {"name": string, "tier": one of ${JSON.stringify(TIERS.map(t=>t[0]))}, "start": "YYYY-MM-DD", "end": "YYYY-MM-DD", "city": string, "country": two-letter code, "venue": string or "", "airport": nearest major airport IATA code or ""}.
+"ic" means International Championships. Example: [{"name":"Las Vegas Regional Championships","tier":"regional","start":"2026-12-04","end":"2026-12-06","city":"Las Vegas","country":"US","venue":"","airport":"LAS"}]
+
+SCHEDULE:
+${txt}`,{modelTier:"default"});
+    if(!Array.isArray(arr)||!arr.length) throw {code:"empty"};
+    S.importRows=arr.filter(r=>r&&r.name&&r.start);
+    out.innerHTML=`<p class="hint">${S.importRows.length} events found. Uncheck any you don't want.</p><div class="preview-list">${S.importRows.map((r,i)=>{ const dup=[...S.tours.values()].some(t=>t.start===r.start&&slug(t.city)===slug(r.city));
+      return `<label class="prow"><input type="checkbox" id="imp-${i}" ${dup?"":"checked"}><b>${esc(r.name)}</b><span class="sub">${fmtD(r.start)} · ${esc(r.city||"")}${dup?" · already added":""}</span></label>`; }).join("")}</div>`;
+    btn.textContent="Add selected"; btn.dataset.act="imp-save"; btn.disabled=false;
+  }catch(e){ btn.disabled=false; out.innerHTML=`<p class="notice">${e&&e.code==="not_granted"?"Claude wasn't allowed for this page. You can still add tournaments one at a time.":e&&e.code==="rate_limited"?"Too many requests right now. Try again in a minute.":"Couldn't read that list. Try pasting a smaller section."}</p>`; }
+}
+function saveImport(){
+  const rows=(S.importRows||[]).filter((r,i)=>document.getElementById("imp-"+i)?.checked);
+  rows.forEach(r=>{ let id=String(r.start).slice(0,7)+"-"+slug(r.city||r.name); if(S.tours.has(id)) id+="-"+uid().slice(-4);
+    const doc={name:r.name,tier:TIERLABEL[r.tier]?r.tier:"other",start:r.start,end:r.end||r.start,city:r.city||"",country:r.country||"",venue:r.venue||"",airport:(r.airport||"").toUpperCase(),notes:"",plan:"none",registered:{},flight:{status:"todo",fares:[]},hotel:{status:"todo",fares:[]},createdAt:new Date().toISOString()};
+    S.tours.set(id,{id,...doc}); if(S.db) saveDoc("tournaments",id); });
+  closeModal(); render(); toast(`${rows.length} tournaments added`);
+}
+
+/* expense / receipt */
+function expOptionsTours(sel){
+  const ts=tourList(); const pri=ts.filter(t=>plan(t)==="committed"||plan(t)==="considering"||t.id===sel), rest=ts.filter(t=>!pri.includes(t));
+  const o=t=>`<option value="${esc(t.id)}" ${t.id===sel?"selected":""}>${esc(t.name)} · ${fmtD(t.start)}</option>`;
+  return `<option value="">Season / general (not one event)</option>${pri.length?`<optgroup label="Your trips">${pri.map(o).join("")}</optgroup>`:""}${rest.length?`<optgroup label="Other events">${rest.map(o).join("")}</optgroup>`:""}`;
+}
+function openExp(id, presetTour){
+  const e = id ? {...S.exps.get(id)} : {category:"meals",date:todayISO(),currency:"USD",paidBy:PAYERS[0],tournamentId:presetTour||"",receipts:[]};
+  if(id && !S.exps.has(id)) return;
+  S.draft={id, e, newFiles:[], removed:[], mode:"file"};
+  openModal(`<div class="mhead"><div><p class="eyebrow">${id?"Expense":"New receipt or expense"}</p><h2>${id?esc(e.vendor||"Expense"):"Add a receipt"}</h2></div><button class="btn small ghost" data-act="close" type="button">Close</button></div>
+    <div class="mbody">
+      <div class="switch" role="group" aria-label="Source"><button type="button" data-act="mode" data-v="file" aria-pressed="true">Photo or file</button><button type="button" data-act="mode" data-v="email" aria-pressed="false">Paste an email</button></div>
+      <div id="src-file"><div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose receipt files"><strong>Drop receipt photos, screenshots or PDFs</strong><span>or tap to choose · you can also paste an image</span>
+        <input id="file-in" type="file" accept="image/*,application/pdf" multiple hidden></div></div>
+      <div id="src-email" hidden><label class="f">Confirmation or receipt email<textarea id="email-text" style="min-height:150px" placeholder="Open the airline, hotel, Uber or store email, select all, copy, and paste it here. It is saved with this expense as your receipt.">${esc(e.emailText||"")}</textarea></label></div>
+      <div class="files" id="file-list"></div>
+      <div id="ai-zone"></div>
+      <div class="grid2">
+        <label class="f">Tournament<select id="e-tour">${expOptionsTours(e.tournamentId)}</select></label>
+        <label class="f">Category<select id="e-cat">${CATS.map(([k,l])=>`<option value="${k}" ${e.category===k?"selected":""}>${l}</option>`).join("")}</select></label>
+        <label class="f" id="e-leg-wrap" ${e.category==="flight"?"":"hidden"} style="grid-column:1/-1">Which flight<select id="e-leg">${[["out","Outbound · one way to the event"],["ret","Return · one way home"],["rt","Round trip · both ways"]].map(([k,l])=>`<option value="${k}" ${(e.leg||"out")===k?"selected":""}>${l}</option>`).join("")}</select></label>
+        <label class="f">Vendor<input id="e-vendor" value="${esc(e.vendor||"")}" placeholder="Alaska Airlines, Uber, TCGplayer…"></label>
+        <label class="f">What it was<input id="e-desc" value="${esc(e.description||"")}" placeholder="4 round-trip tickets SEA–LAS"></label>
+        <label class="f">Date<input id="e-date" type="date" value="${esc(e.date||"")}"></label>
+        <div class="grid2" style="gap:8px"><label class="f">Amount<input id="e-amt" type="number" step="0.01" min="0" value="${esc(e.amount??"")}" placeholder="0.00"></label>
+          <label class="f">Currency<select id="e-cur">${CURR.map(c=>`<option ${ (e.currency||"USD")===c?"selected":""}>${c}</option>`).join("")}</select></label></div>
+        <label class="f">Confirmation / order #<input id="e-conf" value="${esc(e.confirmation||"")}" class="mono"></label>
+        <label class="f">Paid by<select id="e-paid">${PAYERS.map(p=>`<option ${e.paidBy===p?"selected":""}>${p}</option>`).join("")}</select></label>
+        <label class="f">Starts / check-in<input id="e-start" type="date" value="${esc(e.startDate||"")}"></label>
+        <label class="f">Ends / check-out<input id="e-end" type="date" value="${esc(e.endDate||"")}"></label>
+        <label class="f" style="grid-column:1/-1">Notes<textarea id="e-notes">${esc(e.notes||"")}</textarea></label>
+      </div>
+      <div id="del-zone"></div>
+    </div>
+    <div class="mfoot">${id?`<button class="btn small ghost danger left" data-act="del-exp" type="button">Delete</button>`:""}<button class="btn" data-act="close" type="button">Cancel</button><button class="btn primary" id="e-save" data-act="save-exp" type="button">${id?"Save":"Add expense"}</button></div>`, "wide");
+  renderFiles(); renderAI();
+  if(e.emailText){ const mb=document.querySelector('[data-act="mode"][data-v="email"]'); if(mb) mb.click(); }
+  $("#email-text").addEventListener("input",renderAI);
+  if(!S.assets){ $("#src-file").innerHTML=`<p class="notice">Your access to this tracker doesn't include photo uploads. Use <b>Paste an email</b>, or type the details below.</p>`; return; }
+  const drop=$("#drop"), inp=$("#file-in");
+  drop.addEventListener("click",()=>inp.click());
+  drop.addEventListener("keydown",ev=>{ if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();inp.click();} });
+  inp.addEventListener("change",()=>{ addFiles(inp.files); inp.value=""; });
+  ["dragenter","dragover"].forEach(n=>drop.addEventListener(n,ev=>{ev.preventDefault();drop.classList.add("over");}));
+  ["dragleave","drop"].forEach(n=>drop.addEventListener(n,ev=>{ev.preventDefault();drop.classList.remove("over");}));
+  drop.addEventListener("drop",ev=>addFiles(ev.dataTransfer.files));
+}
+const hasReceipt = e => (e.receipts||[]).length>0 || !!e.emailText;
+function addFiles(list){ if(!S.draft) return; for(const f of list||[]){ if(!/^image\/|application\/pdf/.test(f.type)){ toast("Use a photo, screenshot or PDF."); continue; } if(f.size>20*1024*1024){ toast(f.name+" is over 20 MB."); continue; } S.draft.newFiles.push({file:f,url:URL.createObjectURL(f)}); } renderFiles(); renderAI(); }
+function renderFiles(){
+  const d=S.draft; if(!d) return;
+  const kept=(d.e.receipts||[]).filter(r=>!d.removed.includes(r.path||r.id));
+  $("#file-list").innerHTML=kept.map(r=>`<div class="file">${/^image\//.test(r.type)?`<img alt="" src="${fileURL(r)}">`:esc((r.name||"PDF").slice(0,18))}<button type="button" data-act="view-file" data-path="${esc(r.path||"")}" data-type="${esc(r.type)}" style="inset:0;width:auto;height:auto;border-radius:0;background:transparent" aria-label="Open receipt"></button><button type="button" data-act="rm-old" data-id="${esc(r.path||r.id)}" aria-label="Remove">×</button></div>`).join("")+
+    d.newFiles.map((f,i)=>`<div class="file">${/^image\//.test(f.file.type)?`<img alt="" src="${f.url}">`:esc(f.file.name.slice(0,18))}<button type="button" data-act="rm-new" data-i="${i}" aria-label="Remove">×</button></div>`).join("");
+}
+function renderAI(){
+  const d=S.draft, z=$("#ai-zone"); if(!d||!z) return;
+  if(!S.sample){ z.innerHTML=""; return; }
+  const imgs=d.newFiles.filter(f=>/^image\//.test(f.file.type));
+  const txt=($("#email-text")||{}).value||"";
+  if(d.mode==="email"){ z.innerHTML=txt.trim()?`<div class="aibar"><span class="msg">Let Claude read this email and fill in the details below.</span><button class="btn small primary" type="button" data-act="ai-read">Fill from email</button></div>`:""; return; }
+  if(!d.newFiles.length){ z.innerHTML=""; return; }
+  if(!imgs.length){ z.innerHTML=`<div class="aibar"><span class="msg">Claude can read photos and screenshots. For a PDF, fill in the fields or paste the email text instead.</span></div>`; return; }
+  z.innerHTML=S.canImages?`<div class="aibar"><span class="msg">Let Claude read ${imgs.length>1?"these receipts":"this receipt"} and fill in the details below.</span><button class="btn small primary" type="button" data-act="ai-read">Fill from photo</button></div>`:"";
+}
+async function aiRead(){
+  const d=S.draft; if(!d) return; const z=$("#ai-zone");
+  const imgs=d.mode==="file"?d.newFiles.filter(f=>/^image\//.test(f.file.type)).map(f=>f.file).slice(0,5):[];
+  const txt=d.mode==="email"?(($("#email-text")||{}).value||"").slice(0,40000):"";
+  const tours=tourList().filter(t=>!isPast(t)||daysUntil(t.end||t.start)>-60).map(t=>`${t.id} | ${t.name} | ${t.start} to ${t.end} | ${t.city}`).join("\n");
+  z.innerHTML=`<div class="aibar"><span class="msg">Reading… this can take up to a minute.</span></div>`;
+  try{
+    const r=await S.sample.json(`This is a receipt, invoice or booking confirmation for a family traveling to Pokémon Trading Card Game tournaments with their two kids. Extract the details.
+Reply with only one JSON object:
+{"category": one of ${JSON.stringify(CATS.map(c=>c[0]))}, "vendor": string, "description": short summary like "4 round-trip tickets SEA-LAS" or "card sleeves x6", "date": purchase date "YYYY-MM-DD", "amount": total charged as a number, "currency": 3-letter code, "confirmation": booking/order/confirmation number or "", "leg": for flights only, "out" if it is one way from Seattle to the event, "ret" if one way from the event back to Seattle, "rt" if it covers both directions; null otherwise, "startDate": departure or check-in "YYYY-MM-DD" or "", "endDate": return or check-out "YYYY-MM-DD" or "", "tournamentId": the id below whose dates and city best match this purchase, or null}
+Category guide: flight=airfare; hotel=lodging; ground=Uber/Lyft/taxi/rental car/parking; meals=food; entry=tournament registration; coaching=paid coaching/lessons; learning=courses, subscriptions, deck-building tools; supplies=sleeves, deck boxes, playmats, binders; cards=single cards or packs.
+Today is ${todayISO()}.
+Tournaments (id | name | dates | city):
+${tours||"(none yet)"}
+${txt?"\nEMAIL:\n"+txt:"\nThe receipt image(s) are attached."}`, imgs.length?{images:imgs}:{});
+    const set=(id,v)=>{ if(v!=null&&v!==""){ const el=document.getElementById(id); if(el) el.value=v; } };
+    if(r&&typeof r==="object"){
+      if(CATLABEL[r.category]) set("e-cat",r.category);
+      set("e-vendor",r.vendor); set("e-desc",r.description); set("e-date",/^\d{4}-\d\d-\d\d$/.test(r.date||"")?r.date:"");
+      if(+r.amount>0) set("e-amt",(+r.amount).toFixed(2)); if(CURR.includes(r.currency)) set("e-cur",r.currency);
+      set("e-conf",r.confirmation); set("e-start",/^\d{4}-\d\d-\d\d$/.test(r.startDate||"")?r.startDate:""); set("e-end",/^\d{4}-\d\d-\d\d$/.test(r.endDate||"")?r.endDate:"");
+      if(r.tournamentId&&S.tours.has(r.tournamentId)) set("e-tour",r.tournamentId);
+      if(["out","ret","rt"].includes(r.leg)) set("e-leg",r.leg);
+      $("#e-leg-wrap").hidden = $("#e-cat").value!=="flight";
+      if(d.mode==="email"&&txt){ const n=$("#e-notes"); if(n&&!n.value) n.value=""; }
+      z.innerHTML=`<div class="aibar"><span class="msg">Filled in from the ${d.mode==="email"?"email":"receipt"}. Check the amount and tournament before saving.</span></div>`;
+    }
+  }catch(e){
+    const m={not_granted:"Claude wasn't allowed for this page, so fill the fields in by hand.",images_unavailable:"Photo reading isn't available here. Fill the fields in by hand.",rate_limited:"Too many requests right now. Try again in a minute.",image_rejected:"Claude couldn't open that image. Try a clearer photo or a screenshot."}[e&&e.code];
+    z.innerHTML=`<div class="aibar"><span class="msg">${m||"Couldn't read it this time. Fill in the fields, or try again."}</span></div>`;
+  }
+}
+async function saveExp(){
+  const d=S.draft; if(!d) return;
+  const amt=parseFloat(val("e-amt"));
+  if(!(amt>=0)||val("e-amt")===""){ toast("Add the amount."); return; }
+  const btn=$("#e-save"); btn.disabled=true; btn.textContent="Saving…";
+  let receipts=(d.e.receipts||[]).filter(r=>!d.removed.includes(r.path||r.id));
+  if(d.newFiles.length){
+    if(!S.assets){ toast("Your access doesn't include photo uploads. Paste the email text or type the details instead."); btn.disabled=false; btn.textContent="Save"; return; }
+    try{ const eid=d.id||(d.newId=d.newId||uid());
+      for(const f of d.newFiles){ const path=`${eid}/${uid()}-${(f.file.name||"receipt").replace(/[^\w.\-]+/g,"_").slice(-60)}`;
+        const {error}=await sb.storage.from("receipts").upload(path,f.file,{contentType:f.file.type||"application/octet-stream"}); if(error) throw error;
+        receipts.push({path,type:f.file.type,name:f.file.name||"receipt"}); }
+      d.newFiles=[]; d.e.receipts=receipts; }
+    catch(e){ btn.disabled=false; btn.textContent="Save"; toast(e&&e.code==="too_large"?"That file is over 20 MB.":e&&e.code==="quota_or_state"?"Receipt storage is full.":"A receipt didn't upload. Try again."); return; }
+  }
+  // pasted email text is kept on the expense itself so it's on file for taxes
+  const emailText = val("email-text") ? val("email-text").slice(0,100000) : (d.e.emailText||"");
+  const doc={emailText, leg: val("e-cat")==="flight"?val("e-leg"):"",tournamentId:val("e-tour"),category:val("e-cat"),vendor:val("e-vendor"),description:val("e-desc"),date:val("e-date"),amount:Math.round(amt*100)/100,currency:val("e-cur")||"USD",
+    confirmation:val("e-conf"),paidBy:val("e-paid"),startDate:val("e-start"),endDate:val("e-end"),notes:val("e-notes"),receipts,updatedAt:new Date().toISOString(),createdAt:d.e.createdAt||new Date().toISOString()};
+  const id=d.id||d.newId||uid();
+  S.exps.set(id,{id,...doc});
+  if(S.db) saveDoc("expenses",id);
+  // a flight or hotel receipt marks that part of the trip booked
+  const t=doc.tournamentId&&S.tours.get(doc.tournamentId);
+  if(t&&doc.category==="hotel"&&hStat(t)!=="booked") patchTour(t.id,{hotel:{status:"booked"}});
+  if(t&&doc.category==="flight"){ const legs={}; (doc.leg==="rt"?["out","ret"]:[doc.leg||"out"]).forEach(l=>{ if(legStat(t,l)!=="booked") legs[l]="booked"; }); if(Object.keys(legs).length) patchTour(t.id,{flight:{legs}}); }
+  if(d.removed.length) sb.storage.from("receipts").remove(d.removed.filter(x=>x.includes("/"))).catch(()=>{});
+  closeModal(); render(); toast(d.id?"Saved":"Expense added");
+}
+function askDelete(kind){
+  $("#del-zone").innerHTML=`<div class="confirm"><span>Delete this ${kind==="tour"?"tournament? Its expenses stay in the ledger":"expense and its receipts"}? This can't be undone.</span><span class="spacer"></span><button class="btn small" data-act="del-cancel" type="button">Keep</button><button class="btn small primary" data-act="${kind==="tour"?"del-tour-yes":"del-exp-yes"}" type="button">Delete</button></div>`;
+}
+async function delExp(){
+  const d=S.draft; if(!d||!d.id) return; const e=S.exps.get(d.id);
+  S.exps.delete(d.id); closeModal(); render(); toast("Expense deleted");
+  if(S.db) await delDoc("expenses",d.id);
+  if(e){ const paths=(e.receipts||[]).map(r=>r.path).filter(Boolean); if(paths.length) sb.storage.from("receipts").remove(paths).catch(()=>{}); }
+}
+function delTour(id){ S.tours.delete(id); closeModal(); render(); toast("Tournament deleted"); if(S.db) delDoc("tournaments",id); }
+
+function viewFile(src,type){
+  if(/^image\//.test(type)) openModal(`<div class="mhead"><h2>Receipt</h2><button class="btn small ghost" data-act="close" type="button">Close</button></div><div class="mbody lightbox"><img alt="Receipt" src="${esc(src)}"></div>`,"wide");
+  else window.open(src,"_blank");
+}
+
+async function exportCSV(){
+  const rows=[["Date","Tournament","Tournament dates","Category","Vendor","Description","Amount","Currency","Paid by","Confirmation","Travel start","Travel end","Receipt files","Email on file","Notes"]];
+  [...S.exps.values()].sort((a,b)=>(a.date||"").localeCompare(b.date||"")).forEach(e=>{ const t=S.tours.get(e.tournamentId)||{};
+    rows.push([e.date,t.name||"Season / general",t.start?`${t.start} to ${t.end}`:"",(CATLABEL[e.category]||e.category)+(e.category==="flight"&&e.leg?` (${LEGNAME[e.leg]})`:""),e.vendor,e.description,e.amount,e.currency||"USD",e.paidBy,e.confirmation,e.startDate,e.endDate,(e.receipts||[]).length,e.emailText?"yes":"",e.notes]); });
+  const csv=rows.map(r=>r.map(c=>{ const s=String(c??""); return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; }).join(",")).join("\n");
+  const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"})); a.download=`tournament-expenses-${todayISO()}.csv`;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),5000); toast("Exported");
+}
+
+/* ---------- events ---------- */
+document.addEventListener("click",ev=>{
+  const tabBtn=ev.target.closest("[data-tab]"); if(tabBtn){ setTab(tabBtn.dataset.tab); return; }
+  const go=ev.target.closest("[data-tabgo]"); if(go){ setTab(go.dataset.tabgo); return; }
+  const fb=ev.target.closest("[data-filt]"); if(fb){ S.filt=fb.dataset.filt; try{localStorage.setItem("tc-filt",S.filt);}catch(e){} renderToolbar(); render(); return; }
+  if(ev.target.matches("[data-scrim]")){ closeModal(); return; }
+  const a=ev.target.closest("[data-act]"); if(!a) return;
+  const id=a.dataset.id, act=a.dataset.act;
+  if(S.readOnly && ["plan","reg","save-new-tour","save-tour","log-fare","save-exp","del-tour-yes","del-exp-yes","imp-save"].includes(act)){ toast("You can view this tracker but not edit it."); return; }
+  switch(act){
+    case "new-tour": newTour(); break;
+    case "save-new-tour": saveNewTour(); break;
+    case "open-tour": openTour(id); break;
+    case "save-tour": saveTour(id); break;
+    case "log-fare": logFare(id,a.dataset.k); break;
+    case "plan": { const t=S.tours.get(id); patchTour(id,{plan:plan(t)===a.dataset.v?"none":a.dataset.v}); break; }
+    case "reg": { const t=S.tours.get(id); const cur=!!(t.registered||{})[a.dataset.v]; patchTour(id,{registered:{[a.dataset.v]:!cur}}); break; }
+    case "close": closeModal(); break;
+    case "import": openImport(); break;
+    case "imp-parse": parseImport(); break;
+    case "imp-save": saveImport(); break;
+    case "new-exp": openExp(null,a.dataset.tour); break;
+    case "open-exp": openExp(id); break;
+    case "save-exp": saveExp(); break;
+    case "mode": { S.draft.mode=a.dataset.v; a.parentElement.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",b===a)); $("#src-file").hidden=a.dataset.v!=="file"; $("#src-email").hidden=a.dataset.v!=="email"; renderAI(); break; }
+    case "ai-read": aiRead(); break;
+    case "rm-new": S.draft.newFiles.splice(+a.dataset.i,1); renderFiles(); renderAI(); break;
+    case "rm-old": S.draft.removed.push(id); renderFiles(); break;
+    case "view-file": openFile(a.dataset.path,a.dataset.type); break;
+    case "signout": if(sb) sb.auth.signOut(); break;
+    case "del-exp": askDelete("exp"); break;
+    case "del-exp-yes": delExp(); break;
+    case "del-tour": S.pendingDel=id; askDelete("tour"); break;
+    case "del-tour-yes": delTour(S.pendingDel); break;
+    case "del-cancel": $("#del-zone").innerHTML=""; break;
+    case "csv": exportCSV(); break;
+  }
+});
+document.addEventListener("change",ev=>{
+  const el=ev.target;
+  if(el.matches('select[data-act="status"]')){ if(S.readOnly){toast("You can view this tracker but not edit it.");return;}
+    if(el.dataset.leg) patchTour(el.dataset.id,{flight:{legs:{[el.dataset.leg]:el.value}}}); else patchTour(el.dataset.id,{[el.dataset.k]:{status:el.value}}); }
+  if(el.id==="e-cat"){ const w=$("#e-leg-wrap"); if(w) w.hidden=el.value!=="flight"; }
+  if(el.id==="sp-tour"){ S.spendTour=el.value; render(); }
+  if(el.id==="sp-cat"){ S.spendCat=el.value; render(); }
+});
+document.addEventListener("input",ev=>{ if(ev.target.id==="sp-q"){ S.spendQ=ev.target.value; render(); } });
+document.addEventListener("keydown",ev=>{ if(ev.key==="Escape"&&$("#modal-root").innerHTML) closeModal(); });
+document.addEventListener("paste",ev=>{ if(!S.draft||S.draft.mode!=="file") return; const files=[...(ev.clipboardData?.files||[])]; if(files.length){ ev.preventDefault(); addFiles(files); } });
+
+/* ---------- boot ---------- */
+function cfg(){ let u=SUPABASE_URL, k=SUPABASE_ANON_KEY;
+  if(!/^https:\/\//.test(u)||k.length<20){ try{ u=localStorage.getItem("tc-sb-url")||""; k=localStorage.getItem("tc-sb-key")||""; }catch(e){} }
+  return /^https:\/\//.test(u)&&k.length>20?{u,k}:null; }
+function showSetup(){ $("#app").hidden=true; $("#auth-root").innerHTML=`<div class="authcard"><p class="eyebrow">One-time setup</p><h1>Connect your database</h1>
+  <p class="hint">Paste the Project URL and the anon public key from Supabase → Project Settings → API. They're saved in this browser only.</p>
+  <label class="f">Project URL<input id="cfg-url" placeholder="https://xxxx.supabase.co"></label><label class="f">Anon public key<input id="cfg-key"></label>
+  <button class="btn primary" id="cfg-go" type="button">Connect</button></div>`;
+  $("#cfg-go").onclick=()=>{ try{ localStorage.setItem("tc-sb-url",val("cfg-url")); localStorage.setItem("tc-sb-key",val("cfg-key")); }catch(e){} location.reload(); }; }
+function showLogin(msg=""){ $("#app").hidden=true; $("#auth-root").innerHTML=`<form class="authcard" id="login" novalidate>
+  <span class="mark" aria-hidden="true"></span><p class="eyebrow">Championship Series · 2026–27</p><h1>Tournament Circuit</h1>
+  <label class="f">Email<input id="li-email" type="email" autocomplete="username" required></label>
+  <label class="f">Password<input id="li-pass" type="password" autocomplete="current-password" required></label>
+  <button class="btn primary" type="submit" id="li-go">Sign in</button><p class="hint" id="li-msg">${esc(msg)}</p></form>`;
+  $("#login").addEventListener("submit",async ev=>{ ev.preventDefault(); const b=$("#li-go"); b.disabled=true; b.textContent="Signing in…";
+    const {error}=await sb.auth.signInWithPassword({email:val("li-email"),password:$("#li-pass").value});
+    if(error){ b.disabled=false; b.textContent="Sign in"; $("#li-msg").textContent=/invalid/i.test(error.message)?"That email and password don't match.":error.message; } }); }
+let started=false;
+async function startApp(){ $("#auth-root").innerHTML=""; $("#app").hidden=false; if(started) return; started=true;
+  S.db=true; S.assets=true; S.downloads=true; renderToolbar(); render();
+  await loadAll();
+  sb.channel("season")
+    .on("postgres_changes",{event:"*",schema:"public",table:"tournaments"},p=>applyChange(S.tours,p))
+    .on("postgres_changes",{event:"*",schema:"public",table:"expenses"},p=>applyChange(S.exps,p))
+    .subscribe();
+  document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible") loadAll(); }); }
+async function loadAll(){
+  const [t,e]=await Promise.all([sb.from("tournaments").select("id,data").limit(2000), sb.from("expenses").select("id,data").limit(5000)]);
+  if(t.error||e.error){ $("#banner").innerHTML=`<p class="notice">Couldn't load your season: ${esc((t.error||e.error).message)}</p>`; S.loaded.t=true; render(); return; }
+  $("#banner").innerHTML="";
+  S.tours=new Map(t.data.map(r=>[r.id,{...r.data,id:r.id}])); S.exps=new Map(e.data.map(r=>[r.id,{...r.data,id:r.id}]));
+  S.loaded.t=S.loaded.e=true; render(); if(S.tab==="spend") renderToolbar(); }
+function applyChange(map,p){ if(p.eventType==="DELETE"){ if(p.old&&p.old.id) map.delete(p.old.id); } else if(p.new&&p.new.id){ map.set(p.new.id,{...p.new.data,id:p.new.id}); } render(); }
+
+renderToolbar(); render();
+(async()=>{
+  if(!window.supabase){ $("#auth-root").innerHTML=`<div class="authcard"><h1>Couldn't load</h1><p class="hint">Check your internet connection and reload the page.</p></div>`; return; }
+  const c=cfg(); if(!c){ showSetup(); return; }
+  sb=window.supabase.createClient(c.u,c.k);
+  const {data:{session}}=await sb.auth.getSession();
+  if(session) startApp(); else showLogin();
+  sb.auth.onAuthStateChange((ev,sess)=>{ if(sess) startApp(); else if(ev==="SIGNED_OUT") location.reload(); });
+})();
+})();
+</script>
+</body>
+</html>
+

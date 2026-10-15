@@ -174,6 +174,15 @@ table{border-collapse:collapse;width:100%;font-size:14px;min-width:760px}
 th{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);font-weight:700;background:var(--sunk)}
 td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
 tr:last-child td{border-bottom:0}
+tr.cancelled td{opacity:.55} tr.cancelled td.amt{text-decoration:line-through}
+.hres{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:4px;font-size:13px}
+.hres-top{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.hres-meta{color:var(--muted);font-size:12px}
+.hres-meta .due{color:var(--warn);font-weight:600}
+.hres-act{display:flex;gap:6px;flex-wrap:wrap}
+.hres.cancelled{opacity:.6}
+.hres.cancelled .hres-top{text-decoration:line-through}
+.hwarn{background:var(--gold-soft);color:var(--ink);border-radius:8px;padding:6px 10px;font-size:12px;font-weight:600}
 tbody tr{cursor:pointer} tbody tr:hover td{background:var(--bg)}
 td.amt,th.amt{text-align:right;font-family:var(--f-mono)}
 .catbadge{font-size:12px;font-weight:600;padding:2px 8px;border-radius:4px;background:var(--sunk);white-space:nowrap}
@@ -311,14 +320,16 @@ const tourList = () => [...S.tours.values()].sort((a,b)=>(a.start||"").localeCom
 const isPast = t => (t.end||t.start||"9999") < todayISO();
 const plan = t => t.plan || "none";
 const expsFor = id => [...S.exps.values()].filter(e=>e.tournamentId===id);
-const usdTotal = list => list.filter(e=>(e.currency||"USD")==="USD").reduce((s,e)=>s+(+e.amount||0),0);
+const usdTotal = list => list.filter(e=>(e.currency||"USD")==="USD"&&e.status!=="cancelled").reduce((s,e)=>s+(+e.amount||0),0);
 const travelNeeded = t => plan(t)==="committed" && !isPast(t);
 const legStat = (t,l) => { const f=t.flight||{}; return (f.legs&&f.legs[l]) || f.status || "todo"; };
 const fStat = t => { const a=legStat(t,"out"), b=legStat(t,"ret"), done=x=>x==="booked"||x==="na";
   if(a==="na"&&b==="na") return "na"; if(done(a)&&done(b)) return "booked";
   if(a==="booked"||b==="booked") return "partial"; if(a==="watching"||b==="watching") return "watching"; return "todo"; };
 const isOpen = s => s==="todo"||s==="watching";
-const hStat = t => (t.hotel&&t.hotel.status)||"todo";
+const hotelBookings = t => expsFor(t.id).filter(e=>e.category==="hotel");
+const hStat = t => { const st=(t.hotel&&t.hotel.status)||"todo", hb=hotelBookings(t);
+  if(hb.some(e=>e.status!=="cancelled")) return "booked"; if(st==="booked"&&hb.length) return "todo"; return st; };
 const outstanding = t => travelNeeded(t) ? [...LEGS.map(l=>l[0]).filter(l=>isOpen(legStat(t,l))), ...(isOpen(hStat(t))?["hotel"]:[])] : [];
 const bookBy = t => { const intl = t.country && !["US","USA","United States"].includes(t.country); return addDays(t.start, intl?-70:-45); };
 
@@ -435,6 +446,16 @@ function spark(fares){
     <circle cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="3.2" fill="var(--accent)"/></svg>`;
 }
 
+function hotelRows(t,list){
+  const act=list.filter(b=>b.status!=="cancelled"), can=list.filter(b=>b.status==="cancelled");
+  const row=b=>{ const c=b.status==="cancelled", dl=(b.cancelBy&&!c)?daysUntil(b.cancelBy):null;
+    return `<div class="hres ${c?"cancelled":""}"><div class="hres-top"><b>${esc(b.vendor||"Hotel")}</b><span class="mono">${money(b.amount,b.currency)}</span></div>
+      <div class="hres-meta">${b.startDate?`${fmtD(b.startDate)}–${fmtD(b.endDate||b.startDate)}`:"Dates not set"}${b.confirmation?` · <span class="mono">${esc(b.confirmation)}</span>`:""}${c?" · <b>Cancelled</b>":""}${dl!=null?` · <span class="${dl<=7?"due":""}">${dl<0?"Free cancellation ended "+fmtD(b.cancelBy):"Free cancel until "+fmtD(b.cancelBy)+(dl<=7?` (${dl} day${dl===1?"":"s"})`:"")}</span>`:""}${!c&&!hasReceipt(b)?` · <span class="nofile">no receipt</span>`:""}</div>
+      <div class="hres-act"><button type="button" class="btn small ghost" data-act="open-exp" data-id="${esc(b.id)}">Details</button><button type="button" class="btn small ${c?"":"ghost danger"}" data-act="toggle-cancel" data-id="${esc(b.id)}">${c?"Restore":"Mark cancelled"}</button></div></div>`; };
+  const first=act.map(b=>b.cancelBy).filter(Boolean).sort()[0];
+  const warn=act.length>1?`<div class="hwarn">${act.length} active reservations. Cancel the extra${first?` by ${fmtD(first)}`:""}.</div>`:"";
+  return warn+act.map(row).join("")+can.map(row).join("")+`<div><button type="button" class="btn small" data-act="new-exp" data-tour="${esc(t.id)}" data-cat="hotel">+ Add hotel reservation</button></div>`;
+}
 function slotHTML(t,k){
   const o=t[k]||{}, s=k==="flight"?fStat(t):hStat(t);
   const bookings=expsFor(t.id).filter(e=>e.category===k);
@@ -444,7 +465,7 @@ function slotHTML(t,k){
   return `<div class="slot ${s}">
     <div class="hd"><b>${k==="flight"?"Flights":"Hotel"}</b>${k==="hotel"?sel(s,null,"Hotel"):""}</div>
     ${k==="flight"?LEGS.map(([l,n])=>{const ls=legStat(t,l); return `<div class="leg ${ls}"><i></i><span class="legn">${n}</span><span class="legd mono">${l==="out"?`${HOME} → ${ap}`:`${ap} → ${HOME}`}</span>${sel(ls,l,n)}</div>`;}).join(""):""}
-    ${bookings.length?bookings.map(b=>`<div class="ln">${b.leg?`<b>${LEGNAME[b.leg]||""}</b>`:""}<span>${esc(b.vendor||CATLABEL[k])}</span>${b.confirmation?`<span class="mono">${esc(b.confirmation)}</span>`:""}<span class="mono">${money(b.amount,b.currency)}</span>${hasReceipt(b)?"":`<span class="nofile">no receipt</span>`}</div>`).join(""):""}
+    ${k==="hotel"?hotelRows(t,bookings):bookings.length?bookings.map(b=>`<div class="ln">${b.leg?`<b>${LEGNAME[b.leg]||""}</b>`:""}<span>${esc(b.vendor||CATLABEL[k])}</span>${b.confirmation?`<span class="mono">${esc(b.confirmation)}</span>`:""}<span class="mono">${money(b.amount,b.currency)}</span>${hasReceipt(b)?"":`<span class="nofile">no receipt</span>`}</div>`).join(""):""}
     ${s!=="booked"&&s!=="na"?`<div class="ln">${o.target?`Target <span class="mono">${money(o.target)}</span>`:""}${last?`Last <span class="mono">${money(last.price)}</span> ${fmtD(last.date)}`:""}${low!=null&&fares.length>1?`Low <span class="mono">${money(low)}</span>`:""}</div>${spark(o.fares)}`:""}
     <div class="ln">${k==="flight"?`<a class="linky" target="_blank" rel="noopener" href="${esc(flightURL(t,"out"))}">Outbound fares ↗</a><a class="linky" target="_blank" rel="noopener" href="${esc(flightURL(t,"ret"))}">Return fares ↗</a>`:`<a class="linky" target="_blank" rel="noopener" href="${esc(hotelURL(t))}">Search hotels ↗</a>`}<button type="button" class="btn small ghost" data-act="open-tour" data-id="${esc(t.id)}">Log fare · details</button></div>
   </div>`;
@@ -460,7 +481,7 @@ function hotelURL(t){ const h=t.hotel||{}; const ci=h.checkin||(t.start?addDays(
 function bookView(){
   const up=tourList().filter(t=>travelNeeded(t));
   const open=up.filter(t=>outstanding(t).length), done=up.filter(t=>!outstanding(t).length);
-  const missing=[...S.exps.values()].filter(e=>(e.category==="flight"||e.category==="hotel")&&!hasReceipt(e));
+  const missing=[...S.exps.values()].filter(e=>(e.category==="flight"||e.category==="hotel")&&e.status!=="cancelled"&&!hasReceipt(e));
   if(!up.length) return `<div class="empty"><strong>No committed trips yet</strong><span>Mark a tournament as <b>Committed</b> on the Season tab and its flight and hotel show up here to track.</span><button class="btn" type="button" data-tabgo="season">Go to Season</button></div>`;
   const row=t=>{ const bb=bookBy(t), dd=daysUntil(bb); const anyOpen=outstanding(t).length;
     return `<div class="brow"><div class="who"><p class="eyebrow">${fmtD(t.start,{month:"short",day:"numeric"})}–${fmtD(t.end||t.start,{month:"short",day:"numeric"})}</p><h3>${esc(t.name)}</h3>
@@ -488,13 +509,13 @@ function spendView(){
   const all=[...S.exps.values()];
   if(!all.length) return `<div class="empty"><strong>No expenses yet</strong><span>Snap a photo of a receipt, drop in a screenshot or PDF, or paste a confirmation email, then fill in the amount.</span><button class="btn primary" data-act="new-exp" type="button">+ Receipt or expense</button></div>`;
   const list=filteredExps();
-  const byCat=new Map(); list.forEach(e=>{ if((e.currency||"USD")!=="USD") return; byCat.set(e.category,(byCat.get(e.category)||0)+(+e.amount||0)); });
-  const byTour=new Map(); list.forEach(e=>{ if((e.currency||"USD")!=="USD") return; const k=e.tournamentId||"__general"; byTour.set(k,(byTour.get(k)||0)+(+e.amount||0)); });
-  const foreign={}; list.forEach(e=>{ const c=e.currency||"USD"; if(c!=="USD") foreign[c]=(foreign[c]||0)+(+e.amount||0); });
+  const byCat=new Map(); list.forEach(e=>{ if((e.currency||"USD")!=="USD"||e.status==="cancelled") return; byCat.set(e.category,(byCat.get(e.category)||0)+(+e.amount||0)); });
+  const byTour=new Map(); list.forEach(e=>{ if((e.currency||"USD")!=="USD"||e.status==="cancelled") return; const k=e.tournamentId||"__general"; byTour.set(k,(byTour.get(k)||0)+(+e.amount||0)); });
+  const foreign={}; list.forEach(e=>{ const c=e.currency||"USD"; if(c!=="USD"&&e.status!=="cancelled") foreign[c]=(foreign[c]||0)+(+e.amount||0); });
   const bars=(m,label)=>{ const arr=[...m].sort((a,b)=>b[1]-a[1]), mx=Math.max(1,...arr.map(a=>a[1]));
     return arr.length?arr.map(([k,v])=>`<div class="bar"><span class="nm" title="${esc(label(k))}">${esc(label(k))}</span><span class="track"><span class="fill" style="width:${(v/mx*100).toFixed(1)}%;display:block"></span></span><span class="amt">${money0(v)}</span></div>`).join(""):`<p class="hint">No USD expenses in this view.</p>`; };
   const total=usdTotal(list);
-  const payer={}; list.forEach(e=>{ if((e.currency||"USD")==="USD") payer[e.paidBy||"—"]=(payer[e.paidBy||"—"]||0)+(+e.amount||0); });
+  const payer={}; list.forEach(e=>{ if((e.currency||"USD")==="USD"&&e.status!=="cancelled") payer[e.paidBy||"—"]=(payer[e.paidBy||"—"]||0)+(+e.amount||0); });
   return `<div class="split">
       <div class="panel"><div class="section-title"><h3>By category</h3><span class="num" style="font-weight:600">${money(total)}</span></div><div class="bars">${bars(byCat,k=>CATLABEL[k]||k)}</div>
         ${Object.keys(foreign).length?`<p class="hint">Plus ${Object.entries(foreign).map(([c,v])=>money(v,c)).join(", ")} in other currencies.</p>`:""}
@@ -502,8 +523,8 @@ function spendView(){
       <div class="panel"><h3>By tournament</h3><div class="bars">${bars(byTour,k=>k==="__general"?"Season / general":(S.tours.get(k)||{}).name||"Removed tournament")}</div></div>
     </div>
     <div class="tablewrap"><table><thead><tr><th>Date</th><th>Vendor</th><th>Category</th><th>Tournament</th><th>Paid by</th><th class="amt">Amount</th><th>Receipt</th></tr></thead><tbody>
-      ${list.map(e=>`<tr data-act="open-exp" data-id="${esc(e.id)}"><td class="mono">${fmtD(e.date,{month:"short",day:"numeric",year:"2-digit"})}</td>
-        <td><b>${esc(e.vendor||"—")}</b>${e.description?`<div class="sub">${esc(e.description)}</div>`:""}${e.confirmation?`<div class="sub mono">${esc(e.confirmation)}</div>`:""}</td>
+      ${list.map(e=>`<tr data-act="open-exp" data-id="${esc(e.id)}" class="${e.status==="cancelled"?"cancelled":""}"><td class="mono">${fmtD(e.date,{month:"short",day:"numeric",year:"2-digit"})}</td>
+        <td><b>${esc(e.vendor||"—")}</b>${e.status==="cancelled"?' <span class="nofile">Cancelled</span>':""}${e.description?`<div class="sub">${esc(e.description)}</div>`:""}${e.confirmation?`<div class="sub mono">${esc(e.confirmation)}</div>`:""}</td>
         <td><span class="catbadge">${esc(CATLABEL[e.category]||"Other")}${e.category==="flight"&&e.leg?" · "+esc(LEGNAME[e.leg]||""):""}</span></td>
         <td>${esc(e.tournamentId?((S.tours.get(e.tournamentId)||{}).name||"—"):"Season / general")}</td>
         <td>${esc(e.paidBy||"")}</td><td class="amt">${money(e.amount,e.currency)}</td>
@@ -578,7 +599,7 @@ function openTour(id){
     <div class="mbody">
       ${travelBlock("flight")}${travelBlock("hotel")}
       <div class="fieldset"><div class="hd"><b>Expenses for this trip</b><button class="btn small" type="button" data-act="new-exp" data-tour="${esc(id)}">+ Add</button></div>
-        ${exps.length?exps.sort((a,b)=>(a.date||"").localeCompare(b.date||"")).map(e=>`<div class="prow" style="cursor:pointer" data-act="open-exp" data-id="${esc(e.id)}"><span class="catbadge">${CATLABEL[e.category]||"Other"}</span><span>${esc(e.vendor||"")}</span><span class="sub mono">${money(e.amount,e.currency)}</span></div>`).join(""):`<p class="hint">Nothing logged yet.</p>`}
+        ${exps.length?exps.sort((a,b)=>(a.date||"").localeCompare(b.date||"")).map(e=>`<div class="prow" style="cursor:pointer" data-act="open-exp" data-id="${esc(e.id)}"><span class="catbadge">${CATLABEL[e.category]||"Other"}</span><span>${esc(e.vendor||"")}${e.status==="cancelled"?' <span class="nofile">Cancelled</span>':""}</span><span class="sub mono">${money(e.amount,e.currency)}</span></div>`).join(""):`<p class="hint">Nothing logged yet.</p>`}
         ${exps.length?`<p class="hint">Total ${money(usdTotal(exps))}</p>`:""}</div>
       <details><summary class="hint" style="cursor:pointer">Edit event details</summary><div style="padding-top:12px">${tourForm(t)}</div></details>
       <div id="del-zone"></div>
@@ -643,8 +664,8 @@ function expOptionsTours(sel){
   const o=t=>`<option value="${esc(t.id)}" ${t.id===sel?"selected":""}>${esc(t.name)} · ${fmtD(t.start)}</option>`;
   return `<option value="">Season / general (not one event)</option>${pri.length?`<optgroup label="Your trips">${pri.map(o).join("")}</optgroup>`:""}${rest.length?`<optgroup label="Other events">${rest.map(o).join("")}</optgroup>`:""}`;
 }
-function openExp(id, presetTour){
-  const e = id ? {...S.exps.get(id)} : {category:"meals",date:todayISO(),currency:"USD",paidBy:PAYERS[0],tournamentId:presetTour||"",receipts:[]};
+function openExp(id, presetTour, presetCat){
+  const e = id ? {...S.exps.get(id)} : {category:presetCat||"meals",date:todayISO(),currency:"USD",paidBy:PAYERS[0],tournamentId:presetTour||"",receipts:[]};
   if(id && !S.exps.has(id)) return;
   S.draft={id, e, newFiles:[], removed:[], mode:"file"};
   openModal(`<div class="mhead"><div><p class="eyebrow">${id?"Expense":"New receipt or expense"}</p><h2>${id?esc(e.vendor||"Expense"):"Add a receipt"}</h2></div><button class="btn small ghost" data-act="close" type="button">Close</button></div>
@@ -659,6 +680,8 @@ function openExp(id, presetTour){
         <label class="f">Tournament<select id="e-tour">${expOptionsTours(e.tournamentId)}</select></label>
         <label class="f">Category<select id="e-cat">${CATS.map(([k,l])=>`<option value="${k}" ${e.category===k?"selected":""}>${l}</option>`).join("")}</select></label>
         <label class="f" id="e-leg-wrap" ${e.category==="flight"?"":"hidden"} style="grid-column:1/-1">Which flight<select id="e-leg">${[["out","Outbound · one way to the event"],["ret","Return · one way home"],["rt","Round trip · both ways"]].map(([k,l])=>`<option value="${k}" ${(e.leg||"out")===k?"selected":""}>${l}</option>`).join("")}</select></label>
+        <label class="f">Status<select id="e-status"><option value="active" ${e.status!=="cancelled"?"selected":""}>Active</option><option value="cancelled" ${e.status==="cancelled"?"selected":""}>Cancelled · not counted in totals</option></select></label>
+        <label class="f" id="e-cxl-wrap" ${["hotel","flight"].includes(e.category)?"":"hidden"}>Free cancellation until<input id="e-cancelby" type="date" value="${esc(e.cancelBy||"")}"></label>
         <label class="f">Vendor<input id="e-vendor" value="${esc(e.vendor||"")}" placeholder="Alaska Airlines, Uber, TCGplayer…"></label>
         <label class="f">What it was<input id="e-desc" value="${esc(e.description||"")}" placeholder="4 round-trip tickets SEA–LAS"></label>
         <label class="f">Date<input id="e-date" type="date" value="${esc(e.date||"")}"></label>
@@ -752,7 +775,7 @@ async function saveExp(){
   }
   // pasted email text is kept on the expense itself so it's on file for taxes
   const emailText = val("email-text") ? val("email-text").slice(0,100000) : (d.e.emailText||"");
-  const doc={emailText, leg: val("e-cat")==="flight"?val("e-leg"):"",tournamentId:val("e-tour"),category:val("e-cat"),vendor:val("e-vendor"),description:val("e-desc"),date:val("e-date"),amount:Math.round(amt*100)/100,currency:val("e-cur")||"USD",
+  const doc={emailText, status:val("e-status")||"active", cancelBy:["hotel","flight"].includes(val("e-cat"))?val("e-cancelby"):"", leg: val("e-cat")==="flight"?val("e-leg"):"",tournamentId:val("e-tour"),category:val("e-cat"),vendor:val("e-vendor"),description:val("e-desc"),date:val("e-date"),amount:Math.round(amt*100)/100,currency:val("e-cur")||"USD",
     confirmation:val("e-conf"),paidBy:val("e-paid"),startDate:val("e-start"),endDate:val("e-end"),notes:val("e-notes"),receipts,updatedAt:new Date().toISOString(),createdAt:d.e.createdAt||new Date().toISOString()};
   const id=d.id||d.newId||uid();
   S.exps.set(id,{id,...doc});
@@ -781,9 +804,9 @@ function viewFile(src,type){
 }
 
 async function exportCSV(){
-  const rows=[["Date","Tournament","Tournament dates","Category","Vendor","Description","Amount","Currency","Paid by","Confirmation","Travel start","Travel end","Receipt files","Email on file","Notes"]];
+  const rows=[["Date","Tournament","Tournament dates","Category","Vendor","Description","Amount","Currency","Paid by","Confirmation","Travel start","Travel end","Receipt files","Email on file","Notes","Status"]];
   [...S.exps.values()].sort((a,b)=>(a.date||"").localeCompare(b.date||"")).forEach(e=>{ const t=S.tours.get(e.tournamentId)||{};
-    rows.push([e.date,t.name||"Season / general",t.start?`${t.start} to ${t.end}`:"",(CATLABEL[e.category]||e.category)+(e.category==="flight"&&e.leg?` (${LEGNAME[e.leg]})`:""),e.vendor,e.description,e.amount,e.currency||"USD",e.paidBy,e.confirmation,e.startDate,e.endDate,(e.receipts||[]).length,e.emailText?"yes":"",e.notes]); });
+    rows.push([e.date,t.name||"Season / general",t.start?`${t.start} to ${t.end}`:"",(CATLABEL[e.category]||e.category)+(e.category==="flight"&&e.leg?` (${LEGNAME[e.leg]})`:""),e.vendor,e.description,e.amount,e.currency||"USD",e.paidBy,e.confirmation,e.startDate,e.endDate,(e.receipts||[]).length,e.emailText?"yes":"",e.notes,e.status==="cancelled"?"Cancelled":"Active"]); });
   const csv=rows.map(r=>r.map(c=>{ const s=String(c??""); return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; }).join(",")).join("\n");
   const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"})); a.download=`tournament-expenses-${todayISO()}.csv`;
   document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),5000); toast("Exported");
@@ -810,7 +833,8 @@ document.addEventListener("click",ev=>{
     case "import": openImport(); break;
     case "imp-parse": parseImport(); break;
     case "imp-save": saveImport(); break;
-    case "new-exp": openExp(null,a.dataset.tour); break;
+    case "new-exp": openExp(null,a.dataset.tour,a.dataset.cat); break;
+    case "toggle-cancel": { const x=S.exps.get(id); if(!x) break; x.status=x.status==="cancelled"?"active":"cancelled"; x.updatedAt=new Date().toISOString(); render(); saveDoc("expenses",id); toast(x.status==="cancelled"?"Marked cancelled":"Restored"); break; }
     case "open-exp": openExp(id); break;
     case "save-exp": saveExp(); break;
     case "mode": { S.draft.mode=a.dataset.v; a.parentElement.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",b===a)); $("#src-file").hidden=a.dataset.v!=="file"; $("#src-email").hidden=a.dataset.v!=="email"; renderAI(); break; }
@@ -831,7 +855,7 @@ document.addEventListener("change",ev=>{
   const el=ev.target;
   if(el.matches('select[data-act="status"]')){ if(S.readOnly){toast("You can view this tracker but not edit it.");return;}
     if(el.dataset.leg) patchTour(el.dataset.id,{flight:{legs:{[el.dataset.leg]:el.value}}}); else patchTour(el.dataset.id,{[el.dataset.k]:{status:el.value}}); }
-  if(el.id==="e-cat"){ const w=$("#e-leg-wrap"); if(w) w.hidden=el.value!=="flight"; }
+  if(el.id==="e-cat"){ const w=$("#e-leg-wrap"); if(w) w.hidden=el.value!=="flight"; const c=$("#e-cxl-wrap"); if(c) c.hidden=!["hotel","flight"].includes(el.value); }
   if(el.id==="sp-tour"){ S.spendTour=el.value; render(); }
   if(el.id==="sp-cat"){ S.spendCat=el.value; render(); }
 });
